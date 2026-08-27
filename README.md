@@ -5,14 +5,14 @@
 [![CI](https://github.com/lumberjacque/loadersz-core/actions/workflows/ci.yml/badge.svg)](https://github.com/lumberjacque/loadersz-core/actions/workflows/ci.yml)
 [![bundle size](https://deno.bundlejs.com/?q=loadersz&badge=detailed&badge-style=flat)](https://bundlejs.com/?q=loadersz)
 [![single loader size](https://deno.bundlejs.com/badge?q=loadersz/typing&treeshake=[*])](#single-mode-imports)
-[![motion states](https://img.shields.io/badge/motion%20states-105-6f8cff?style=flat-square)](#states)
+[![motion states](https://img.shields.io/badge/motion%20states-120-6f8cff?style=flat-square)](#states)
 [![license](https://img.shields.io/npm/l/loadersz?style=flat-square&label=license)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![core dependencies](https://img.shields.io/badge/core%20dependencies-0-2ea44f?style=flat-square)](#accessibility-and-performance)
 
 Framework-agnostic, dependency-free Canvas loaders for the browser. `loadersz` ships as a native Web Component and a small imperative TypeScript API-no React, SVG filters, or runtime dependencies.
 
-**105 motion states. One fixed state is 2.5–3.1 kB gzipped; the complete switchable library is available from one import.**
+**120 motion states. One fixed state is 2.5–3.1 kB gzipped; the complete switchable library is available from one import.**
 
 ## Install
 

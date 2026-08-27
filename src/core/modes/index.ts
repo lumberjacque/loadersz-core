@@ -5,4 +5,5 @@ export * from './atmospheric';
 export * from './classic-loaders';
 export * from './utility-loaders';
 export * from './data-loaders';
+export * from './data-studies';
 export { FRAME_BUILDERS, buildFrame } from './registry';

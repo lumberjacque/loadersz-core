@@ -115,6 +115,21 @@ export const STATE_TO_MODE: Record<LoaderStateName, OrbMode> = {
   sampling: 'scatter',
   forecasting: 'forecast',
   metering: 'meter',
+  heatmapping: 'heatmap',
+  candlesticking: 'candles',
+  graphing: 'graph',
+  waterfalling: 'waterfall',
+  clustering: 'clusters',
+  indexing: 'index',
+  benchmarking: 'benchmark',
+  profiling: 'profile',
+  binning: 'histogram',
+  aggregating: 'aggregate',
+  scrubbing: 'scrubber',
+  telemetry: 'telemetryreadout',
+  polling: 'poll',
+  correlating: 'correlation',
+  routing: 'flowmap',
 };
 
 /** Ordered semantic state names used by consumers that need to enumerate the full library. */
@@ -184,6 +199,21 @@ const dataStates = [
   'sampling',
   'forecasting',
   'metering',
+  'heatmapping',
+  'candlesticking',
+  'graphing',
+  'waterfalling',
+  'clustering',
+  'indexing',
+  'benchmarking',
+  'profiling',
+  'binning',
+  'aggregating',
+  'scrubbing',
+  'telemetry',
+  'polling',
+  'correlating',
+  'routing',
 ] as const satisfies readonly LoaderStateName[];
 
 const atmosphereStates = [
