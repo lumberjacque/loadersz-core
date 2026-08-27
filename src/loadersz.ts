@@ -18,7 +18,7 @@ import { LoaderszLoaderElement } from './core/LoaderszOrbElement';
  *
  * The package registers itself automatically when it is imported. Exporting the
  * registration step also gives bundlers a concrete call to retain when the
- * source entry point is consumed by a local demo or documentation site.
+ * source entry point is consumed by an application or documentation site.
  *
  * @returns Nothing. Calling this function repeatedly is safe.
  */

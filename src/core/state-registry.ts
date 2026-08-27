@@ -6,7 +6,7 @@ export type LoaderStateName = Exclude<OrbState, OrbMode>;
 /**
  * Single source of truth for the public state names and their pure geometry builders.
  *
- * The runtime resolver, demo metadata, direct-entry verification and future documentation
+ * The runtime resolver, playground metadata, direct-entry verification and future documentation
  * generation all derive from this registry rather than maintaining independent state lists.
  */
 export const STATE_TO_MODE: Record<LoaderStateName, OrbMode> = {

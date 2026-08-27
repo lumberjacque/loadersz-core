@@ -21,7 +21,8 @@
   },
   "license": "MIT",
   "files": [
-    "dist"
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
   ],
   "type": "module",
   "sideEffects": [
@@ -157,12 +158,10 @@
     "tag": "latest"
   },
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
+    "build": "vite build --config vite.library.config.ts",
     "build:angular": "ngc -p tsconfig.angular.json",
     "build:types": "tsc -p tsconfig.build.json && node scripts/fix-declaration-imports.mjs",
     "build:package": "npm run build:angular && vite build --config vite.library.config.ts && node scripts/build-single-modes.mjs && npm run build:types && node scripts/copy-angular-types.mjs",
-    "preview": "vite preview --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "typecheck:adapters": "tsc -p tsconfig.adapters.json --noEmit",
     "lint": "oxlint src --deny-warnings",
