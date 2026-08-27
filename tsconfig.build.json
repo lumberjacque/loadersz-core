@@ -9,10 +9,11 @@
   },
   "include": [
     "src/loadersz.ts",
+    "src/states.ts",
     "src/modes.ts",
     "src/singles/**/*.ts",
     "src/adapters/**/*.ts",
-    "src/orb/**/*.ts"
+    "src/core/**/*.ts"
   ],
   "exclude": [
     "src/**/*.test.ts",

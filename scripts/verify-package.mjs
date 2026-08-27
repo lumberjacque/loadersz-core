@@ -16,6 +16,8 @@ const singleModes = (await readdir(resolve(root, 'src', 'singles')))
 const requiredFiles = [
   'dist/loadersz.js',
   'dist/loadersz.d.ts',
+  'dist/states.js',
+  'dist/states.d.ts',
   'dist/modes.js',
   'dist/modes.d.ts',
   'dist/react.js',
@@ -62,6 +64,10 @@ if (manifest.exports?.['./angular']?.types !== './dist/adapters/angular.d.ts')
 if (manifest.exports?.['./modes']?.import !== './dist/modes.js') fail('Modes ESM export must target dist/modes.js.');
 if (manifest.exports?.['./modes']?.types !== './dist/modes.d.ts')
   fail('Modes types export must target dist/modes.d.ts.');
+if (manifest.exports?.['./states']?.import !== './dist/states.js')
+  fail('States ESM export must target dist/states.js.');
+if (manifest.exports?.['./states']?.types !== './dist/states.d.ts')
+  fail('States types export must target dist/states.d.ts.');
 if (manifest.exports?.['./*']?.import !== './dist/*.js')
   fail('single-mode ESM exports must target their individual dist files.');
 if (manifest.exports?.['./*']?.types !== './dist/singles/*.d.ts')
@@ -153,6 +159,10 @@ if (!angularDeclaration.includes('ɵdir'))
 const rootEntry = await importBuild('dist/loadersz.js');
 if (typeof rootEntry.LoaderszLoader !== 'function') fail('root entry must expose the imperative controller.');
 if (!customElements.get('loadersz-loader')) fail('root entry must register the custom element.');
+
+const statesEntry = await importBuild('dist/states.js');
+if (!Array.isArray(statesEntry.LOADER_STATES) || statesEntry.LOADER_STATES.length !== singleModes.length)
+  fail('states entry must expose every direct-import state.');
 
 for (const state of singleModes) {
   const entry = await importBuild(`dist/${state}.js`);

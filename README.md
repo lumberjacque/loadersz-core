@@ -20,6 +20,16 @@ Framework-agnostic, dependency-free Canvas loaders for the browser. `loadersz` s
 npm install loadersz
 ```
 
+### Enumerate available states
+
+Use the tiny, side-effect-free states entry when building a picker or documentation UI:
+
+```ts
+import { LOADER_STATES } from "loadersz/states";
+
+console.log(LOADER_STATES); // ["working", "searching", …]
+```
+
 Import once in your application to register the custom element safely:
 
 ```ts
