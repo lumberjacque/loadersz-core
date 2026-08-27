@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "outDir": "dist"
+  },
+  "include": [
+    "src/loadersz.ts",
+    "src/modes.ts",
+    "src/singles/**/*.ts",
+    "src/adapters/**/*.ts",
+    "src/orb/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.typecheck.ts",
+    "src/**/*.typecheck.tsx",
+    "src/demo.ts"
+  ]
+}

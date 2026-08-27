@@ -1,0 +1,10 @@
+# Defense in depth: `package.json#files` is the primary allowlist.
+# Keep local source, tests, docs, demos, and tooling out of npm tarballs.
+src/
+scripts/
+*.test.ts
+*.config.ts
+tsconfig*.json
+index.html
+PUBLISHING.md
+node_modules/

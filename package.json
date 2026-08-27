@@ -1,0 +1,227 @@
+{
+  "name": "loadersz",
+  "version": "0.5.0",
+  "private": false,
+  "description": "Framework-agnostic animated Canvas loaders as a native web component.",
+  "keywords": [
+    "animation",
+    "canvas",
+    "loader",
+    "loading",
+    "typescript",
+    "web-component"
+  ],
+  "homepage": "https://loadersz.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lumberjacque/loadersz-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lumberjacque/loadersz-core/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "./dist/loadersz.js",
+    "./dist/react.js",
+    "./dist/vue.js",
+    "./dist/svelte.js",
+    "./dist/angular.js",
+    "./dist/working.js",
+    "./dist/searching.js",
+    "./dist/connecting.js",
+    "./dist/weaving.js",
+    "./dist/shaping.js",
+    "./dist/listening.js",
+    "./dist/breathing.js",
+    "./dist/composing.js",
+    "./dist/solving.js",
+    "./dist/observing.js",
+    "./dist/dreaming.js",
+    "./dist/charging.js",
+    "./dist/flowing.js",
+    "./dist/awakening.js",
+    "./dist/coding.js",
+    "./dist/transcending.js",
+    "./dist/singing.js",
+    "./dist/growing.js",
+    "./dist/blooming.js",
+    "./dist/wandering.js",
+    "./dist/decoding.js",
+    "./dist/calibrating.js",
+    "./dist/attracting.js",
+    "./dist/shattering.js",
+    "./dist/crystallizing.js",
+    "./dist/constellating.js",
+    "./dist/folding.js",
+    "./dist/echoing.js",
+    "./dist/balancing.js",
+    "./dist/weathering.js",
+    "./dist/mapping.js",
+    "./dist/forging.js",
+    "./dist/orbiting.js",
+    "./dist/racing.js",
+    "./dist/bubbling.js",
+    "./dist/spinning.js",
+    "./dist/electrifying.js",
+    "./dist/flocking.js",
+    "./dist/throbbing.js",
+    "./dist/cascading.js",
+    "./dist/spiraling.js",
+    "./dist/juggling.js",
+    "./dist/eclipsing.js",
+    "./dist/resonating.js",
+    "./dist/condensing.js",
+    "./dist/dispersing.js",
+    "./dist/prisming.js",
+    "./dist/levitating.js",
+    "./dist/synchronizing.js",
+    "./dist/unraveling.js",
+    "./dist/pondering.js",
+    "./dist/deducing.js",
+    "./dist/branching.js",
+    "./dist/focusing.js",
+    "./dist/reflecting.js",
+    "./dist/weighing.js",
+    "./dist/recalling.js",
+    "./dist/tracing.js",
+    "./dist/converging.js",
+    "./dist/questioning.js",
+    "./dist/glimmering.js",
+    "./dist/radiating.js",
+    "./dist/harmonizing.js",
+    "./dist/twinkling.js",
+    "./dist/flickering.js",
+    "./dist/shimmering.js",
+    "./dist/surfacing.js",
+    "./dist/vibrating.js",
+    "./dist/illuminating.js",
+    "./dist/sparkling.js",
+    "./dist/loading.js",
+    "./dist/buffering.js",
+    "./dist/typing.js",
+    "./dist/processing.js",
+    "./dist/synthesizing.js",
+    "./dist/considering.js",
+    "./dist/uploading.js",
+    "./dist/queuing.js",
+    "./dist/associating.js",
+    "./dist/evaluating.js",
+    "./dist/reasoning.js",
+    "./dist/exploring.js",
+    "./dist/linking.js",
+    "./dist/resolving.js",
+    "./dist/imagining.js"
+  ],
+  "types": "./dist/loadersz.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/loadersz.d.ts",
+      "import": "./dist/loadersz.js"
+    },
+    "./react": {
+      "types": "./dist/adapters/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./vue": {
+      "types": "./dist/adapters/vue.d.ts",
+      "import": "./dist/vue.js"
+    },
+    "./svelte": {
+      "types": "./dist/adapters/svelte.d.ts",
+      "import": "./dist/svelte.js"
+    },
+    "./angular": {
+      "types": "./dist/adapters/angular.d.ts",
+      "import": "./dist/angular.js"
+    },
+    "./modes": {
+      "types": "./dist/modes.d.ts",
+      "import": "./dist/modes.js"
+    },
+    "./*": {
+      "types": "./dist/singles/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "tag": "latest"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "build:angular": "ngc -p tsconfig.angular.json",
+    "build:types": "tsc -p tsconfig.build.json && node scripts/fix-declaration-imports.mjs",
+    "build:package": "npm run build:angular && vite build --config vite.library.config.ts && node scripts/build-single-modes.mjs && npm run build:types && node scripts/copy-angular-types.mjs",
+    "preview": "vite preview --host 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "typecheck:adapters": "tsc -p tsconfig.adapters.json --noEmit",
+    "lint": "oxlint src --deny-warnings",
+    "lint:fix": "oxlint src --fix",
+    "format": "oxfmt --write \"**/*.{js,mjs,cjs,ts,tsx}\" && prettier --write \"**/*.{css,json,md,yml,yaml}\"",
+    "format:check": "oxfmt --check \"**/*.{js,mjs,cjs,ts,tsx}\" && prettier --check \"**/*.{css,json,md,yml,yaml}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "hooks:install": "husky",
+    "lint-staged": "lint-staged",
+    "verify": "npm run typecheck && npm run typecheck:adapters && npm run build:angular && npm run lint && npm run format:check && npm run test && npm run build",
+    "verify:package": "node scripts/verify-package.mjs",
+    "verify:angular-consumer": "ngc -p tsconfig.angular-consumer.json",
+    "pack:check": "npm pack --dry-run --ignore-scripts",
+    "prepublishOnly": "npm run verify && npm run build:package && npm run verify:angular-consumer && npm run verify:package"
+  },
+  "devDependencies": {
+    "@angular/compiler": "^21.2.21",
+    "@angular/compiler-cli": "^21.2.21",
+    "@angular/core": "^21.2.21",
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
+    "@types/react": "^19.2.18",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
+    "oxfmt": "^0.61.0",
+    "oxlint": "^1.76.0",
+    "prettier": "^3.9.6",
+    "react": "^19.2.8",
+    "svelte": "^5.56.10",
+    "typescript": "^5.9.0",
+    "vite": "^8.0.0",
+    "vitest": "^4.0.0",
+    "vue": "^3.5.41"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=21 <23",
+    "react": ">=18",
+    "svelte": ">=4",
+    "vue": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "@angular/core": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,tsx}": [
+      "oxfmt --write",
+      "oxlint --fix --deny-warnings"
+    ],
+    "*.{css,json,md,yml,yaml}": "prettier --write"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

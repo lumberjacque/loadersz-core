@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+.angular-build/
+.angular-consumer-build/
+website/playwright-report/
+website/test-results/
