@@ -4,7 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/loadersz?style=flat-square&logo=npm&label=downloads)](https://www.npmjs.com/package/loadersz)
 [![CI](https://github.com/lumberjacque/loadersz-core/actions/workflows/ci.yml/badge.svg)](https://github.com/lumberjacque/loadersz-core/actions/workflows/ci.yml)
 [![bundle size](https://deno.bundlejs.com/?q=loadersz&badge=detailed&badge-style=flat)](https://bundlejs.com/?q=loadersz)
-[![single loader size](https://img.shields.io/badge/one%20loader-2.5--3.1%20kB%20gzip-2ea44f?style=flat-square)](#single-mode-imports)
+[![single loader size](https://deno.bundlejs.com/badge?q=loadersz/typing&treeshake=[*])](#single-mode-imports)
 [![motion states](https://img.shields.io/badge/motion%20states-85-6f8cff?style=flat-square)](#states)
 [![license](https://img.shields.io/npm/l/loadersz?style=flat-square&label=license)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
