@@ -6,6 +6,7 @@ import * as atmospheric from './atmospheric';
 import * as classicLoaders from './classic-loaders';
 import * as utilityLoaders from './utility-loaders';
 import * as dataLoaders from './data-loaders';
+import * as dataStudies from './data-studies';
 
 const BUILDERS = {
   ...foundational,
@@ -15,6 +16,7 @@ const BUILDERS = {
   ...classicLoaders,
   ...utilityLoaders,
   ...dataLoaders,
+  ...dataStudies,
 };
 type FrameBuilder = (context: FrameContext) => OrbFrame;
 
@@ -125,6 +127,21 @@ export const FRAME_BUILDERS: Record<OrbMode, FrameBuilder> = {
   scatter: BUILDERS.scatterFrame,
   forecast: BUILDERS.forecastFrame,
   meter: BUILDERS.meterFrame,
+  heatmap: BUILDERS.heatmapFrame,
+  candles: BUILDERS.candlesFrame,
+  graph: BUILDERS.nodegraphFrame,
+  waterfall: BUILDERS.waterfallFrame,
+  clusters: BUILDERS.clustersFrame,
+  index: BUILDERS.indexFrame,
+  benchmark: BUILDERS.benchmarkFrame,
+  profile: BUILDERS.profileFrame,
+  histogram: BUILDERS.histogramFrame,
+  aggregate: BUILDERS.aggregateFrame,
+  scrubber: BUILDERS.scrubberFrame,
+  telemetryreadout: BUILDERS.telemetryFrame,
+  poll: BUILDERS.pollingFrame,
+  correlation: BUILDERS.correlationFrame,
+  flowmap: BUILDERS.flowmapFrame,
 };
 
 /**

@@ -104,7 +104,22 @@ export type OrbMode =
   | 'plot'
   | 'scatter'
   | 'forecast'
-  | 'meter';
+  | 'meter'
+  | 'heatmap'
+  | 'candles'
+  | 'graph'
+  | 'waterfall'
+  | 'clusters'
+  | 'index'
+  | 'benchmark'
+  | 'profile'
+  | 'histogram'
+  | 'aggregate'
+  | 'scrubber'
+  | 'telemetryreadout'
+  | 'poll'
+  | 'correlation'
+  | 'flowmap';
 
 /** Semantic states that map to a visual geometry without coupling callers to an implementation detail. */
 export type OrbState =
@@ -213,6 +228,21 @@ export type OrbState =
   | 'sampling'
   | 'forecasting'
   | 'metering'
+  | 'heatmapping'
+  | 'candlesticking'
+  | 'graphing'
+  | 'waterfalling'
+  | 'clustering'
+  | 'indexing'
+  | 'benchmarking'
+  | 'profiling'
+  | 'binning'
+  | 'aggregating'
+  | 'scrubbing'
+  | 'telemetry'
+  | 'polling'
+  | 'correlating'
+  | 'routing'
   | OrbMode;
 
 /** Canvas colour scheme. `auto` follows the browser's `prefers-color-scheme` media query. */
