@@ -9,6 +9,7 @@ export default defineConfig({
     lib: {
       entry: {
         loadersz: 'src/loadersz.ts',
+        states: 'src/states.ts',
         modes: 'src/modes.ts',
         react: 'src/adapters/react.ts',
         vue: 'src/adapters/vue.ts',

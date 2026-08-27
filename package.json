@@ -1,6 +1,6 @@
 {
   "name": "loadersz",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": false,
   "description": "Framework-agnostic animated Canvas loaders as a native web component.",
   "keywords": [
@@ -141,6 +141,10 @@
     "./modes": {
       "types": "./dist/modes.d.ts",
       "import": "./dist/modes.js"
+    },
+    "./states": {
+      "types": "./dist/states.d.ts",
+      "import": "./dist/states.js"
     },
     "./*": {
       "types": "./dist/singles/*.d.ts",
