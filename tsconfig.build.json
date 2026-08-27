@@ -18,7 +18,6 @@
   "exclude": [
     "src/**/*.test.ts",
     "src/**/*.typecheck.ts",
-    "src/**/*.typecheck.tsx",
-    "src/demo.ts"
+    "src/**/*.typecheck.tsx"
   ]
 }
