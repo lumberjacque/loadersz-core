@@ -236,9 +236,6 @@ export function memoryFrame(context: FrameContext): OrbFrame {
       addDot(frame, point, 0.3 + depth(point) * 0.95 + progress * 0.36, alpha * (0.5 + depth(point) * 0.5));
     }
   }
-  const core = project(0, 0, 0.32);
-  const pulse = (Math.sin(context.time * 1.45) + 1) / 2;
-  addDot(frame, core, 0.58 + pulse * 0.36, 0.34 + pulse * 0.3);
   return frame;
 }
 
