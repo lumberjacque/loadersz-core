@@ -5,8 +5,17 @@ import * as reasoning from './reasoning';
 import * as atmospheric from './atmospheric';
 import * as classicLoaders from './classic-loaders';
 import * as utilityLoaders from './utility-loaders';
+import * as dataLoaders from './data-loaders';
 
-const BUILDERS = { ...foundational, ...kinetic, ...reasoning, ...atmospheric, ...classicLoaders, ...utilityLoaders };
+const BUILDERS = {
+  ...foundational,
+  ...kinetic,
+  ...reasoning,
+  ...atmospheric,
+  ...classicLoaders,
+  ...utilityLoaders,
+  ...dataLoaders,
+};
 type FrameBuilder = (context: FrameContext) => OrbFrame;
 
 /** Lookup table for every bundled pure geometry builder. */
@@ -111,6 +120,11 @@ export const FRAME_BUILDERS: Record<OrbMode, FrameBuilder> = {
   circuitboard: BUILDERS.circuitboardFrame,
   marquee: BUILDERS.marqueeFrame,
   orbitdots: BUILDERS.orbitdotsFrame,
+  chart: BUILDERS.chartFrame,
+  plot: BUILDERS.plotFrame,
+  scatter: BUILDERS.scatterFrame,
+  forecast: BUILDERS.forecastFrame,
+  meter: BUILDERS.meterFrame,
 };
 
 /**

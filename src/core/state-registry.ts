@@ -110,6 +110,11 @@ export const STATE_TO_MODE: Record<LoaderStateName, OrbMode> = {
   wiring: 'circuitboard',
   marqueeing: 'marquee',
   'orbiting-dots': 'orbitdots',
+  charting: 'chart',
+  plotting: 'plot',
+  sampling: 'scatter',
+  forecasting: 'forecast',
+  metering: 'meter',
 };
 
 /** Ordered semantic state names used by consumers that need to enumerate the full library. */
@@ -118,7 +123,7 @@ export const LOADER_STATES = Object.freeze(Object.keys(STATE_TO_MODE) as LoaderS
 /** A named, ordered grouping of states for selectors, documentation and galleries. */
 export interface LoaderCategory {
   /** Stable machine-readable category identifier. */
-  readonly id: 'loaders' | 'reasoning' | 'motion';
+  readonly id: 'loaders' | 'systems' | 'data' | 'reasoning' | 'atmosphere' | 'motion';
   /** Human-readable category heading. */
   readonly label: string;
   /** States that belong to this category, in gallery order. */
@@ -130,23 +135,11 @@ const loaderStates = [
   'buffering',
   'typing',
   'processing',
-  'uploading',
-  'queuing',
   'loading-bars',
   'progressing',
   'placeholder',
-  'monitoring',
-  'checking',
-  'tracking',
   'waiting',
   'pulsing',
-  'signaling',
-  'stepping',
-  'streaming',
-  'equalizing',
-  'wiring',
-  'marqueeing',
-  'orbiting-dots',
 ] as const satisfies readonly LoaderStateName[];
 
 const reasoningStates = [
@@ -170,12 +163,57 @@ const reasoningStates = [
   'imagining',
 ] as const satisfies readonly LoaderStateName[];
 
-const categorizedStates = new Set<LoaderStateName>([...loaderStates, ...reasoningStates]);
+const systemStates = [
+  'uploading',
+  'queuing',
+  'signaling',
+  'stepping',
+  'wiring',
+  'marqueeing',
+  'orbiting-dots',
+] as const satisfies readonly LoaderStateName[];
+
+const dataStates = [
+  'monitoring',
+  'checking',
+  'tracking',
+  'streaming',
+  'equalizing',
+  'charting',
+  'plotting',
+  'sampling',
+  'forecasting',
+  'metering',
+] as const satisfies readonly LoaderStateName[];
+
+const atmosphereStates = [
+  'glimmering',
+  'radiating',
+  'harmonizing',
+  'twinkling',
+  'flickering',
+  'shimmering',
+  'surfacing',
+  'vibrating',
+  'illuminating',
+  'sparkling',
+] as const satisfies readonly LoaderStateName[];
+
+const categorizedStates = new Set<LoaderStateName>([
+  ...loaderStates,
+  ...systemStates,
+  ...dataStates,
+  ...reasoningStates,
+  ...atmosphereStates,
+]);
 
 /** Public category metadata. Every state appears exactly once. */
 export const LOADER_CATEGORIES = Object.freeze([
   Object.freeze({ id: 'loaders' as const, label: 'Loaders', states: Object.freeze([...loaderStates]) }),
+  Object.freeze({ id: 'systems' as const, label: 'Systems', states: Object.freeze([...systemStates]) }),
+  Object.freeze({ id: 'data' as const, label: 'Data & telemetry', states: Object.freeze([...dataStates]) }),
   Object.freeze({ id: 'reasoning' as const, label: 'Reasoning', states: Object.freeze([...reasoningStates]) }),
+  Object.freeze({ id: 'atmosphere' as const, label: 'Atmosphere', states: Object.freeze([...atmosphereStates]) }),
   Object.freeze({
     id: 'motion' as const,
     label: 'Motion studies',
