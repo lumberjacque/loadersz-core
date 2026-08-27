@@ -50,6 +50,9 @@ export class LoaderszLoader {
   /** Geometry-detail multiplier. Bind with `[density]`. */
   @Input() @HostBinding('attr.density') density?: number;
 
+  /** Particle radius multiplier from `0.5` to `2.5`. Bind with `[particleRadius]`. */
+  @Input() @HostBinding('attr.particle-radius') particleRadius?: number;
+
   /** Native palette override from 0 to 360. Bind with `[hue]`. */
   @Input() @HostBinding('attr.hue') hue?: number;
 

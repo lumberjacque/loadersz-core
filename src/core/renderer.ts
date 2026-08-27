@@ -28,6 +28,7 @@ function shade(
  * @param frame Geometry produced by a frame builder.
  * @param theme Concrete theme; resolve `auto` before calling.
  * @param hueOverride Hue in `0`–`360`, or `-1` to keep each mode's native tones.
+ * @param particleRadius Multiplier for particle radii, clamped by the caller to `0.5`–`2.5`.
  * @returns Nothing. The caller is responsible for clearing the canvas first.
  */
 export function paintFrame(
@@ -36,6 +37,7 @@ export function paintFrame(
   theme: Exclude<OrbTheme, 'auto'>,
   hueOverride = -1,
   colorOverride?: string,
+  particleRadius = 1,
 ): void {
   const usesColorOverride = Boolean(colorOverride);
   context.save();
@@ -55,7 +57,7 @@ export function paintFrame(
       context.globalAlpha = usesColorOverride ? dot.alpha : 1;
       context.fillStyle = shade(theme, dot, dot.alpha, dot.tone, hueOverride, colorOverride);
       context.beginPath();
-      context.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+      context.arc(dot.x, dot.y, dot.radius * particleRadius, 0, Math.PI * 2);
       context.fill();
     });
   context.restore();

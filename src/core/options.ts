@@ -13,6 +13,7 @@ export const DEFAULT_OPTIONS: Required<LoaderszOrbOptions> = {
   forceMotion: false,
   ariaLabel: 'Loading',
   density: 1,
+  particleRadius: 1,
   hue: -1,
   color: '',
 };

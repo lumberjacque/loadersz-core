@@ -94,7 +94,14 @@ export class CanvasLoader {
       { time: this.currentTime(performance.now()), radius: size * 0.41, density: clamp(this.options.density, 0.35, 2) },
       this.options,
     );
-    paintFrame(this.context, frame, resolveTheme(this.options.theme), this.options.hue, this.colorOverride);
+    paintFrame(
+      this.context,
+      frame,
+      resolveTheme(this.options.theme),
+      this.options.hue,
+      this.colorOverride,
+      clamp(this.options.particleRadius, 0.5, 2.5),
+    );
   }
 
   private canAnimate(): boolean {
