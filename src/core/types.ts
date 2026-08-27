@@ -99,7 +99,12 @@ export type OrbMode =
   | 'equalizer'
   | 'circuitboard'
   | 'marquee'
-  | 'orbitdots';
+  | 'orbitdots'
+  | 'chart'
+  | 'plot'
+  | 'scatter'
+  | 'forecast'
+  | 'meter';
 
 /** Semantic states that map to a visual geometry without coupling callers to an implementation detail. */
 export type OrbState =
@@ -203,6 +208,11 @@ export type OrbState =
   | 'wiring'
   | 'marqueeing'
   | 'orbiting-dots'
+  | 'charting'
+  | 'plotting'
+  | 'sampling'
+  | 'forecasting'
+  | 'metering'
   | OrbMode;
 
 /** Canvas colour scheme. `auto` follows the browser's `prefers-color-scheme` media query. */

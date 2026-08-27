@@ -3,7 +3,7 @@ import { LOADER_CATEGORIES, LOADER_STATES, STATE_TO_MODE } from './state-registr
 
 describe('state registry', () => {
   it('exposes every direct-import state exactly once and in registry order', () => {
-    expect(LOADER_STATES).toHaveLength(100);
+    expect(LOADER_STATES).toHaveLength(105);
     expect(LOADER_STATES).toEqual(Object.keys(STATE_TO_MODE));
     expect(new Set(LOADER_STATES)).toHaveLength(LOADER_STATES.length);
   });
