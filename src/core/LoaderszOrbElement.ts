@@ -23,7 +23,19 @@ export class LoaderszLoaderElement extends HTMLElement {
    * @returns Supported HTML attribute names. `aria-label` is mirrored to the internal canvas.
    */
   static get observedAttributes(): string[] {
-    return ['state', 'size', 'speed', 'theme', 'paused', 'force-motion', 'density', 'hue', 'color', 'aria-label'];
+    return [
+      'state',
+      'size',
+      'speed',
+      'theme',
+      'paused',
+      'force-motion',
+      'density',
+      'particle-radius',
+      'hue',
+      'color',
+      'aria-label',
+    ];
   }
 
   /**
@@ -79,6 +91,7 @@ export class LoaderszLoaderElement extends HTMLElement {
       paused: this.hasAttribute('paused') && this.getAttribute('paused') !== 'false',
       forceMotion: this.hasAttribute('force-motion') && this.getAttribute('force-motion') !== 'false',
       density: Number(this.getAttribute('density')) || DEFAULT_OPTIONS.density,
+      particleRadius: Number(this.getAttribute('particle-radius')) || DEFAULT_OPTIONS.particleRadius,
       hue: this.hasAttribute('hue') ? Number(this.getAttribute('hue')) : DEFAULT_OPTIONS.hue,
       color: this.getAttribute('color') || DEFAULT_OPTIONS.color,
       ariaLabel: this.label,

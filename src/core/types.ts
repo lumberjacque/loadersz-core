@@ -84,7 +84,22 @@ export type OrbMode =
   | 'explore'
   | 'link'
   | 'resolve'
-  | 'imagine';
+  | 'imagine'
+  | 'bars'
+  | 'progress'
+  | 'skeleton'
+  | 'waveform'
+  | 'grid'
+  | 'radar'
+  | 'hourglass'
+  | 'rings'
+  | 'signal'
+  | 'steps'
+  | 'stream'
+  | 'equalizer'
+  | 'circuitboard'
+  | 'marquee'
+  | 'orbitdots';
 
 /** Semantic states that map to a visual geometry without coupling callers to an implementation detail. */
 export type OrbState =
@@ -173,6 +188,21 @@ export type OrbState =
   | 'linking'
   | 'resolving'
   | 'imagining'
+  | 'loading-bars'
+  | 'progressing'
+  | 'placeholder'
+  | 'monitoring'
+  | 'checking'
+  | 'tracking'
+  | 'waiting'
+  | 'pulsing'
+  | 'signaling'
+  | 'stepping'
+  | 'streaming'
+  | 'equalizing'
+  | 'wiring'
+  | 'marqueeing'
+  | 'orbiting-dots'
   | OrbMode;
 
 /** Canvas colour scheme. `auto` follows the browser's `prefers-color-scheme` media query. */
@@ -182,7 +212,7 @@ export type OrbTheme = 'auto' | 'dark' | 'light';
  * Construction and update values accepted by {@link LoaderszLoader} and `<loadersz-loader>`.
  *
  * Attribute values on the custom element are strings; the element converts supported numeric
- * attributes (`size`, `speed`, `density` and `hue`) before forwarding this object to the renderer.
+ * attributes (`size`, `speed`, `density`, `particle-radius` and `hue`) before forwarding this object to the renderer.
  */
 export interface LoaderszOrbOptions {
   /** Semantic state or a low-level geometry mode. Defaults to `working`. */
@@ -201,6 +231,8 @@ export interface LoaderszOrbOptions {
   ariaLabel?: string;
   /** Geometry detail multiplier. The renderer clamps it to `0.35`–`2`; default is `1`. */
   density?: number;
+  /** Multiplies every rendered particle radius. Values are clamped to `0.5`–`2.5`; default is `1`. */
+  particleRadius?: number;
   /** -1 keeps a mode's native/monochrome look; 0–360 forces one hue. */
   hue?: number;
   /** A CSS colour such as `#c8f135`, `oklch(78% 0.18 118)`, or `var(--brand)`. When present, it overrides `hue`. */

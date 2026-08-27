@@ -4,8 +4,9 @@ import * as kinetic from './kinetic';
 import * as reasoning from './reasoning';
 import * as atmospheric from './atmospheric';
 import * as classicLoaders from './classic-loaders';
+import * as utilityLoaders from './utility-loaders';
 
-const BUILDERS = { ...foundational, ...kinetic, ...reasoning, ...atmospheric, ...classicLoaders };
+const BUILDERS = { ...foundational, ...kinetic, ...reasoning, ...atmospheric, ...classicLoaders, ...utilityLoaders };
 type FrameBuilder = (context: FrameContext) => OrbFrame;
 
 /** Lookup table for every bundled pure geometry builder. */
@@ -95,6 +96,21 @@ export const FRAME_BUILDERS: Record<OrbMode, FrameBuilder> = {
   link: BUILDERS.linkFrame,
   resolve: BUILDERS.resolveFrame,
   imagine: BUILDERS.imagineFrame,
+  bars: BUILDERS.barsFrame,
+  progress: BUILDERS.progressFrame,
+  skeleton: BUILDERS.skeletonFrame,
+  waveform: BUILDERS.waveformFrame,
+  grid: BUILDERS.gridFrame,
+  radar: BUILDERS.radarFrame,
+  hourglass: BUILDERS.hourglassFrame,
+  rings: BUILDERS.ringsFrame,
+  signal: BUILDERS.signalFrame,
+  steps: BUILDERS.stepsFrame,
+  stream: BUILDERS.streamFrame,
+  equalizer: BUILDERS.equalizerFrame,
+  circuitboard: BUILDERS.circuitboardFrame,
+  marquee: BUILDERS.marqueeFrame,
+  orbitdots: BUILDERS.orbitdotsFrame,
 };
 
 /**

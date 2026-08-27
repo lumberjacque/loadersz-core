@@ -26,13 +26,14 @@ export interface LoaderszReactProps extends LoaderszOrbOptions, Omit<HTMLAttribu
  * ```
  */
 export const LoaderszLoader = forwardRef<HTMLElement, LoaderszReactProps>(function LoaderszLoader(
-  { forceMotion, ariaLabel, paused, ...props },
+  { forceMotion, ariaLabel, paused, particleRadius, ...props },
   ref,
 ) {
   return createElement('loadersz-loader', {
     ...props,
     ref,
     paused: paused ? '' : undefined,
+    'particle-radius': particleRadius,
     'force-motion': forceMotion ? '' : undefined,
     'aria-label': ariaLabel ?? props['aria-label'],
   });

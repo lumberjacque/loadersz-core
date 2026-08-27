@@ -30,6 +30,17 @@ import { LOADER_STATES } from "loadersz/states";
 console.log(LOADER_STATES); // ["working", "searching", …]
 ```
 
+Use the category metadata when building a picker or gallery. It keeps product-style loaders,
+reasoning states, and motion studies in the same order as the official website:
+
+```ts
+import { LOADER_CATEGORIES } from "loadersz/states";
+
+for (const category of LOADER_CATEGORIES) {
+  console.log(category.label, category.states);
+}
+```
+
 Import once in your application to register the custom element safely:
 
 ```ts
@@ -53,18 +64,19 @@ import "loadersz";
 
 ### Attributes
 
-| Attribute      | Type                    | Default   | Description                                                       |
-| -------------- | ----------------------- | --------- | ----------------------------------------------------------------- |
-| `state`        | state name              | `working` | Selects the visual geometry.                                      |
-| `size`         | number                  | `96`      | Square side in CSS pixels; values below `16` are clamped.         |
-| `speed`        | number                  | `1`       | Timeline multiplier.                                              |
-| `density`      | number                  | `1`       | Geometry detail; clamped to `0.35`–`2`.                           |
-| `theme`        | `auto`, `dark`, `light` | `auto`    | Canvas colour scheme.                                             |
-| `hue`          | `0`–`360`               | unset     | Overrides a mode's native colour palette.                         |
-| `color`        | CSS colour string       | unset     | Overrides `hue`; accepts hex, CSS colours, and `var(--token)`.    |
-| `paused`       | boolean attribute       | unset     | Stops frame scheduling and keeps the current frame visible.       |
-| `force-motion` | boolean attribute       | unset     | Overrides a reduced-motion preference; use only when appropriate. |
-| `aria-label`   | string                  | `Loading` | Accessible label applied to the internal canvas.                  |
+| Attribute         | Type                    | Default   | Description                                                       |
+| ----------------- | ----------------------- | --------- | ----------------------------------------------------------------- |
+| `state`           | state name              | `working` | Selects the visual geometry.                                      |
+| `size`            | number                  | `96`      | Square side in CSS pixels; values below `16` are clamped.         |
+| `speed`           | number                  | `1`       | Timeline multiplier.                                              |
+| `density`         | number                  | `1`       | Geometry detail; clamped to `0.35`–`2`.                           |
+| `particle-radius` | number                  | `1`       | Multiplies visible particle thickness; clamped to `0.5`–`2.5`.    |
+| `theme`           | `auto`, `dark`, `light` | `auto`    | Canvas colour scheme.                                             |
+| `hue`             | `0`–`360`               | unset     | Overrides a mode's native colour palette.                         |
+| `color`           | CSS colour string       | unset     | Overrides `hue`; accepts hex, CSS colours, and `var(--token)`.    |
+| `paused`          | boolean attribute       | unset     | Stops frame scheduling and keeps the current frame visible.       |
+| `force-motion`    | boolean attribute       | unset     | Overrides a reduced-motion preference; use only when appropriate. |
+| `aria-label`      | string                  | `Loading` | Accessible label applied to the internal canvas.                  |
 
 ### Colour modes
 
@@ -168,7 +180,7 @@ For Solid, Qwik, Lit, and plain HTML, import `loadersz` and use `<loadersz-loade
 | Angular                | `import 'loadersz'` + `LoaderszLoader`            | `import 'loadersz/racing'` + `LoaderszLoader`                           |
 | Lit, Solid, Qwik, HTML | `import 'loadersz'`                               | `import 'loadersz/racing'`                                              |
 
-The controls are always the same. The native element spells its two multi-word attributes as `aria-label` and `force-motion`; React and Vue wrappers spell them as `ariaLabel` and `forceMotion`. `state`, `size`, `speed`, `density`, `hue`, `color`, `theme`, and `paused` keep the same name.
+The controls are always the same. The native element spells its multi-word attributes as `aria-label`, `force-motion`, and `particle-radius`; React and Vue wrappers spell them as `ariaLabel`, `forceMotion`, and `particleRadius`. `state`, `size`, `speed`, `density`, `hue`, `color`, `theme`, and `paused` keep the same name.
 
 ## Single-mode imports
 

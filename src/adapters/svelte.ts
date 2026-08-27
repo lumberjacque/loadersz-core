@@ -10,6 +10,7 @@ export type LoaderszSvelteAttributes = HTMLAttributes<HTMLElement> &
   LoaderszOrbOptions & {
     'aria-label'?: string;
     'force-motion'?: boolean | '';
+    'particle-radius'?: number;
   };
 
 declare module 'svelte/elements' {
