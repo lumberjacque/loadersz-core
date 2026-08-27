@@ -102,7 +102,9 @@ export function branchFrame({ time, radius, density }: FrameContext): OrbFrame {
   const frame = createFrame();
   const center = radius / 0.82;
   const growth = (Math.sin(time * 0.52) + 1) / 2;
-  const levels = 5;
+  // Keep the branching decision tree legible at low density while letting higher detail
+  // values add real decision depth rather than only decorative background particles.
+  const levels = Math.max(3, Math.min(7, Math.round(3 + density * 2)));
   const drawBranch = (from: ProjectedPoint, angle: number, length: number, depthLevel: number, seed: number): void => {
     if (depthLevel >= levels) return;
     const visible = smoothstep(Math.max(0, Math.min(1, growth * levels - depthLevel)));

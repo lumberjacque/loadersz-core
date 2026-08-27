@@ -100,9 +100,8 @@ export function waveformFrame({ time, radius, density }: FrameContext): OrbFrame
 export function gridFrame({ time, radius, density }: FrameContext): OrbFrame {
   const frame = createFrame();
   const center = centerOf(radius);
-  void density;
-  const columns = 7;
-  const rows = 6;
+  const columns = Math.max(4, Math.min(9, Math.round(5 + density * 2)));
+  const rows = Math.max(4, Math.min(8, Math.round(4 + density * 2)));
   for (let row = 0; row < rows; row += 1) {
     for (let column = 0; column < columns; column += 1) {
       const phase = (time * 0.48 + (column + row) / (columns + rows)) % 1;
@@ -110,8 +109,8 @@ export function gridFrame({ time, radius, density }: FrameContext): OrbFrame {
       addDot(
         frame,
         {
-          x: center + (column - (columns - 1) / 2) * radius * 0.24,
-          y: center + (row - (rows - 1) / 2) * radius * 0.25,
+          x: center + (column - (columns - 1) / 2) * ((radius * 1.48) / columns),
+          y: center + (row - (rows - 1) / 2) * ((radius * 1.34) / rows),
           z: pulse * 0.9 - 0.3,
         },
         0.42 + pulse * 1.02,
@@ -342,22 +341,24 @@ export function circuitboardFrame({ time, radius, density }: FrameContext): OrbF
     for (let index = 1; index < points.length; index += 1)
       addLine(frame, points[index - 1], points[index], 0.12, 0.3, 156 + routeIndex * 22);
     points.forEach((point) => addDot(frame, point, 0.62, 0.42, 156 + routeIndex * 22));
-    const progress = (time * (0.34 + routeIndex * 0.06) + routeIndex * 0.23) % 1;
-    const segment = Math.min(points.length - 2, Math.floor(progress * (points.length - 1)));
-    const local = (progress * (points.length - 1)) % 1;
-    addDot(
-      frame,
-      {
-        x: lerp(points[segment].x, points[segment + 1].x, local),
-        y: lerp(points[segment].y, points[segment + 1].y, local),
-        z: 0.9,
-      },
-      1.12,
-      0.94,
-      156 + routeIndex * 22,
-    );
+    const packets = Math.max(1, Math.min(5, Math.round(density * 2)));
+    for (let packet = 0; packet < packets; packet += 1) {
+      const progress = (time * (0.34 + routeIndex * 0.06) + routeIndex * 0.23 + packet / packets) % 1;
+      const segment = Math.min(points.length - 2, Math.floor(progress * (points.length - 1)));
+      const local = (progress * (points.length - 1)) % 1;
+      addDot(
+        frame,
+        {
+          x: lerp(points[segment].x, points[segment + 1].x, local),
+          y: lerp(points[segment].y, points[segment + 1].y, local),
+          z: 0.9,
+        },
+        1.12,
+        0.94,
+        156 + routeIndex * 22,
+      );
+    }
   });
-  void density;
   return frame;
 }
 
