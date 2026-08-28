@@ -140,9 +140,9 @@ export function radarFrame({ time, radius, density }: FrameContext): OrbFrame {
       164,
     );
   }
-  const head = { x: center + Math.cos(sweep) * radius * 0.73, y: center + Math.sin(sweep) * radius * 0.73, z: 0.9 };
+  const head = { x: center + Math.cos(sweep) * radius * 0.61, y: center + Math.sin(sweep) * radius * 0.61, z: 0.9 };
   addLine(frame, { x: center, y: center, z: -0.2 }, head, 0.3, 0.7, 164);
-  addDot(frame, head, 1.26, 0.96, 164);
+  addDot(frame, head, 0.76, 0.9, 164);
   return frame;
 }
 
@@ -256,10 +256,10 @@ export function stepsFrame({ time, radius, density }: FrameContext): OrbFrame {
 export function streamFrame({ time, radius, density }: FrameContext): OrbFrame {
   const frame = createFrame();
   const center = centerOf(radius);
-  const lanes = 3;
+  const lanes = Math.max(3, Math.min(7, Math.round(3 * density)));
   const packets = Math.max(4, Math.round(7 * density));
   for (let lane = 0; lane < lanes; lane += 1) {
-    const offset = (lane - 1) * radius * 0.28;
+    const offset = (lane - (lanes - 1) / 2) * (radius * 0.72 / Math.max(1, lanes - 1));
     let previous: ProjectedPoint | undefined;
     for (let sample = 0; sample <= 26; sample += 1) {
       const progress = sample / 26;
@@ -293,7 +293,7 @@ export function streamFrame({ time, radius, density }: FrameContext): OrbFrame {
 export function equalizerFrame({ time, radius, density }: FrameContext): OrbFrame {
   const frame = createFrame();
   const center = centerOf(radius);
-  const bars = 9;
+  const bars = Math.max(6, Math.min(18, Math.round(9 * density)));
   for (let bar = 0; bar < bars; bar += 1) {
     const energy = 0.2 + Math.pow((Math.sin(time * (1.4 + (bar % 3) * 0.22) + bar * 1.7) + 1) / 2, 1.55) * 0.78;
     const count = Math.max(3, Math.round((3 + energy * 8) * density));
