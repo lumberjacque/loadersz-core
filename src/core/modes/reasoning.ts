@@ -123,7 +123,10 @@ export function branchFrame({ time, radius, density }: FrameContext): OrbFrame {
   };
   const root = { x: center, y: center + radius * 0.7, z: 0.8 };
   addDot(frame, root, 1.25, 0.86);
-  drawBranch(root, Math.PI / 2, radius * 0.48, 0, 0.21);
+  // Start with a visible choice rather than a trunk: the first two paths split
+  // directly from the root and make the mode read as branching immediately.
+  drawBranch(root, Math.PI / 2 - 0.48, radius * 0.45, 0, 0.21);
+  drawBranch(root, Math.PI / 2 + 0.48, radius * 0.45, 0, 0.79);
   const dust = Math.round(32 * density);
   for (let index = 0; index < dust; index += 1) {
     const seed = hash(index * 9.13);
