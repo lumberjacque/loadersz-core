@@ -6,7 +6,7 @@ import type { OrbFrame, ProjectedPoint } from './types';
  * @returns A fresh mutable frame with no dots or lines.
  */
 export function createFrame(): OrbFrame {
-  return { dots: [], lines: [], rects: [], arcs: [] };
+  return { dots: [], lines: [], rects: [], arcs: [], polygons: [] };
 }
 
 /**
@@ -88,6 +88,22 @@ export function addArc(
   if (alpha > 0.015 && arc.radius > 0 && arc.width > 0) {
     frame.arcs.push({ ...arc, z: arc.z ?? 0, alpha, tone });
   }
+}
+
+/**
+ * Adds a filled polygon using ordered projected vertices.
+ *
+ * @param frame Destination geometry.
+ * @param points At least three vertices ordered around the perimeter.
+ * @param alpha Opacity; values at or below `0.015` are ignored.
+ * @param tone Optional HSL hue.
+ */
+export function addPolygon(frame: OrbFrame, points: readonly ProjectedPoint[], alpha = 1, tone?: number): void {
+  if (alpha <= 0.015 || points.length < 3) return;
+  const x = points.reduce((total, point) => total + point.x, 0) / points.length;
+  const y = points.reduce((total, point) => total + point.y, 0) / points.length;
+  const z = points.reduce((total, point) => total + point.z, 0) / points.length;
+  frame.polygons.push({ x, y, z, points, alpha, tone });
 }
 
 /**

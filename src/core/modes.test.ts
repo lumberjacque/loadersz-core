@@ -6,7 +6,9 @@ const frameContext = { time: 1.25, radius: 40, density: 1 };
 describe('orb modes', () => {
   it.each(Object.keys(FRAME_BUILDERS))('%s produces visible geometry', (mode) => {
     const frame = buildFrame(mode as keyof typeof FRAME_BUILDERS, frameContext);
-    expect(frame.dots.length + frame.lines.length + frame.rects.length + frame.arcs.length).toBeGreaterThan(0);
+    expect(frame.dots.length + frame.lines.length + frame.rects.length + frame.arcs.length + frame.polygons.length).toBeGreaterThan(
+      0,
+    );
     expect(frame.dots.every((dot) => Number.isFinite(dot.x) && Number.isFinite(dot.y) && Number.isFinite(dot.z))).toBe(
       true,
     );
@@ -14,6 +16,9 @@ describe('orb modes', () => {
       true,
     );
     expect(frame.arcs.every((arc) => Number.isFinite(arc.x) && Number.isFinite(arc.y) && Number.isFinite(arc.z))).toBe(
+      true,
+    );
+    expect(frame.polygons.every((polygon) => Number.isFinite(polygon.x) && Number.isFinite(polygon.y) && Number.isFinite(polygon.z))).toBe(
       true,
     );
   });

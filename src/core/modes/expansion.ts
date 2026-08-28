@@ -1,9 +1,128 @@
 import type { FrameContext, OrbFrame, ProjectedPoint } from './shared';
-import { addArc, addDot, addLine, addRect, createFrame, TAU } from './shared';
+import { addArc, addDot, addLine, addPolygon, addRect, createFrame, TAU } from './shared';
 import { densityCount, safeThickness } from './shape-metrics';
 
 const center = (radius: number) => radius / 0.82;
 const pulse = (time: number, seed = 0, speed = 1) => (Math.sin(time * speed + seed) + 1) / 2;
+
+function addDiamond(
+  frame: OrbFrame,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  z: number,
+  alpha: number,
+  tone: number,
+): void {
+  addPolygon(
+    frame,
+    [
+      { x, y: y - height / 2, z },
+      { x: x + width / 2, y, z },
+      { x, y: y + height / 2, z },
+      { x: x - width / 2, y, z },
+    ],
+    alpha,
+    tone,
+  );
+}
+
+function addWorkflowCard(
+  frame: OrbFrame,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  z: number,
+  alpha: number,
+  tone: number,
+  time: number,
+  variant: number,
+  skeletonRows: number,
+): void {
+  const patterns = [
+    [0.72, 0.46, 0.62],
+    [0.38, 0.74, 0.52],
+    [0.6, 0.35, 0.7],
+    [0.48, 0.67, 0.42],
+  ];
+  const pattern = patterns[variant % patterns.length];
+  const breath = 0.78 + (Math.sin(time * 1.7 + variant * 1.13) + 1) * 0.11;
+  addRect(frame, { x, y, width, height, z }, alpha * 0.48 * breath);
+  if (variant % 4 === 0) {
+    addDot(frame, { x: x + width * 0.2, y: y + height * 0.23, z: z + 0.03 }, height * 0.09, alpha * 0.32);
+  } else if (variant % 4 === 1) {
+    for (let control = 0; control < 3; control += 1) {
+      addRect(
+        frame,
+        { x: x + width * (0.18 + control * 0.2), y: y + height * 0.2, width: width * 0.13, height: height * 0.1, z: z + 0.03 },
+        alpha * 0.26,
+      );
+    }
+  } else if (variant % 4 === 2) {
+    addRect(frame, { x: x + width * 0.18, y: y + height * 0.16, width: width * 0.26, height: height * 0.15, z: z + 0.03 }, alpha * 0.26);
+    addRect(frame, { x: x + width * 0.5, y: y + height * 0.16, width: width * 0.32, height: height * 0.15, z: z + 0.03 }, alpha * 0.2);
+  } else {
+    addRect(frame, { x: x + width * 0.18, y: y + height * 0.16, width: width * 0.18, height: height * 0.15, z: z + 0.03 }, alpha * 0.24);
+    addRect(frame, { x: x + width * 0.42, y: y + height * 0.16, width: width * 0.4, height: height * 0.15, z: z + 0.03 }, alpha * 0.22);
+  }
+  const rowHeight = height / (skeletonRows + 2);
+  for (let row = 0; row < skeletonRows; row += 1) {
+    const length = width * pattern[row % pattern.length];
+    const left = x + width * 0.18;
+    const top = y + rowHeight * (row + 1.1);
+    const skeletonHeight = Math.max(0.8, rowHeight * 0.2);
+    addRect(
+      frame,
+      { x: left, y: top, width: length, height: skeletonHeight, z: z + 0.01 },
+      alpha * (0.26 + row * 0.045),
+    );
+    const stripeWidth = Math.max(1.4, length * 0.24);
+    const stripeX = left + ((time * 0.58 + variant * 0.19 + row * 0.13) % 1) * (length + stripeWidth) - stripeWidth;
+    const highlightLeft = Math.max(left, stripeX);
+    const highlightRight = Math.min(left + length, stripeX + stripeWidth);
+    if (highlightRight > highlightLeft) {
+      addRect(
+        frame,
+        { x: highlightLeft, y: top, width: highlightRight - highlightLeft, height: skeletonHeight, z: z + 0.02 },
+        Math.min(1, alpha * 0.92),
+      );
+    }
+  }
+  addRect(frame, { x: x + width * 0.08, y: y + height * 0.12, width: width * 0.06, height: height * 0.76, z: z + 0.02 }, alpha * 0.75, tone);
+}
+
+function addWorkflowConnector(
+  frame: OrbFrame,
+  from: ProjectedPoint,
+  to: ProjectedPoint,
+  progress: number,
+  tone: number,
+): void {
+  const bend = Math.max(8, Math.abs(to.x - from.x) * 0.46);
+  const controls = [
+    { x: from.x + bend, y: from.y, z: from.z },
+    { x: to.x - bend, y: to.y, z: to.z },
+  ];
+  const pointAt = (t: number): ProjectedPoint => {
+    const inverse = 1 - t;
+    return {
+      x: inverse ** 3 * from.x + 3 * inverse ** 2 * t * controls[0].x + 3 * inverse * t ** 2 * controls[1].x + t ** 3 * to.x,
+      y: inverse ** 3 * from.y + 3 * inverse ** 2 * t * controls[0].y + 3 * inverse * t ** 2 * controls[1].y + t ** 3 * to.y,
+      z: inverse ** 3 * from.z + 3 * inverse ** 2 * t * controls[0].z + 3 * inverse * t ** 2 * controls[1].z + t ** 3 * to.z,
+    };
+  };
+  let previous = pointAt(0);
+  const segments = 12;
+  for (let segment = 1; segment <= segments; segment += 1) {
+    const point = pointAt(segment / segments);
+    addLine(frame, previous, point, 0.32, 0.72, 214);
+    previous = point;
+  }
+  const packet = pointAt(progress);
+  addRect(frame, { x: packet.x - 1.9, y: packet.y - 1.35, width: 3.8, height: 2.7, z: 1.3 }, 0.92, tone);
+}
 
 /** Draws an indeterminate download channel that fills in successive blocks. */
 export function downloadFrame({ time, radius, density, particleRadius }: FrameContext): OrbFrame {
@@ -142,32 +261,62 @@ export function paginationFrame({ time, radius, density, particleRadius }: Frame
   return frame;
 }
 
-/** Draws two connection ends that separate and then snap back together. */
-export function reconnectFrame({ time, radius, particleRadius }: FrameContext): OrbFrame {
+/** Draws a reconnecting relay: angular fragments converge into a live link between two hex terminals. */
+export function reconnectFrame({ time, radius, density, particleRadius }: FrameContext): OrbFrame {
   const frame = createFrame();
   const c = center(radius);
-  const separation = Math.abs(Math.sin(time * 0.75)) * radius * 0.25;
-  const w = safeThickness({ time, radius, density: 1, particleRadius }, radius * 0.12, radius * 0.3, radius * 0.06);
-  addArc(
-    frame,
-    { x: c - separation, y: c, radius: radius * 0.34, startAngle: -1.25, endAngle: 1.25, width: w, z: 0.3 },
-    0.82,
-    195,
+  const fragments = densityCount({ time, radius, density }, { base: 9, minimum: 6, maximum: 16 });
+  const rawConnection = pulse(time, 0.15, 0.42);
+  const connection = rawConnection * rawConnection * (3 - 2 * rawConnection);
+  const terminalSize = radius * 0.2;
+  const pieceWidth = safeThickness(
+    { time, radius, density, particleRadius },
+    radius * 0.11,
+    (radius * 1.15) / fragments,
+    radius * 0.018,
   );
-  addArc(
-    frame,
-    {
-      x: c + separation,
-      y: c,
-      radius: radius * 0.34,
-      startAngle: Math.PI - 1.25,
-      endAngle: Math.PI + 1.25,
-      width: w,
-      z: 0.3,
-    },
-    0.82,
-    30,
-  );
+  const left = { x: c - radius * 0.7, y: c, z: 0.4 };
+  const right = { x: c + radius * 0.7, y: c, z: 0.4 };
+  for (const [terminal, tone] of [[left, 196], [right, 28]] as const) {
+    const points = Array.from({ length: 6 }, (_, index) => {
+      const angle = -Math.PI / 2 + (index * TAU) / 6;
+      return { x: terminal.x + Math.cos(angle) * terminalSize, y: terminal.y + Math.sin(angle) * terminalSize, z: terminal.z };
+    });
+    addPolygon(frame, points, 0.32, 214);
+    for (let contact = 0; contact < 3; contact += 1) {
+      const y = terminal.y + (contact - 1) * terminalSize * 0.48;
+      const direction = terminal === left ? 1 : -1;
+      addDiamond(frame, terminal.x + direction * terminalSize * 0.36, y, terminalSize * 0.25, terminalSize * 0.19, 0.75, 0.72, tone);
+    }
+  }
+  for (let fragment = 0; fragment < fragments; fragment += 1) {
+    const progress = (fragment + 1) / (fragments + 1);
+    const targetX = c + (progress - 0.5) * radius * 1.05;
+    const targetY = c - Math.sin(progress * Math.PI) * radius * 0.18;
+    const source = fragment % 2 ? left : right;
+    const arrival = Math.max(0, Math.min(1, connection * 1.5 - (fragment / fragments) * 0.5));
+    const drift = (1 - arrival) * radius * 0.27;
+    const x = source.x + (targetX - source.x) * arrival;
+    const y = source.y + (targetY - source.y) * arrival + Math.sin(time * 1.8 + fragment * 1.9) * drift;
+    const tone = fragment % 2 ? 196 : 28;
+    addLine(frame, source, { x, y, z: arrival }, 0.08 + (1 - arrival) * 0.2, 0.72, 214);
+    addDiamond(frame, x, y, pieceWidth, pieceWidth * 0.72, arrival, 0.14 + arrival * 0.8, tone);
+  }
+  if (connection > 0.5) {
+    for (let packet = 0; packet < 3; packet += 1) {
+      const p = (time * 0.55 + packet / 3) % 1;
+      addDiamond(
+        frame,
+        left.x + (right.x - left.x) * p,
+        c - Math.sin(p * Math.PI) * radius * 0.18,
+        pieceWidth * 0.62,
+        pieceWidth * 0.4,
+        1,
+        (connection - 0.46) * 1.7,
+        48,
+      );
+    }
+  }
   return frame;
 }
 
@@ -334,50 +483,116 @@ export function dispatchFrame({ time, radius, density }: FrameContext): OrbFrame
   return frame;
 }
 
-/** Draws records accumulating into discrete, ready-to-send batches. */
+/** Draws a low-code batch workflow: skeleton cards rearrange, split into parallel work, merge, then dispatch. */
 export function batchFrame({ time, radius, density, particleRadius }: FrameContext): OrbFrame {
   const frame = createFrame();
   const c = center(radius);
-  const batches = densityCount({ time, radius, density }, { base: 5, minimum: 3, maximum: 10 });
-  const step = (radius * 1.42) / batches;
-  const side = safeThickness({ time, radius, density, particleRadius }, step * 0.62, step, step * 0.16);
-  for (let i = 0; i < batches; i += 1) {
-    const fill = pulse(time, i * 1.2, 0.85);
-    addRect(
+  const cardWidth = safeThickness(
+    { time, radius, density, particleRadius },
+    radius * 0.25,
+    radius * 0.36,
+    radius * 0.07,
+  );
+  const cardHeight = radius * 0.22;
+  const layoutTime = time * 0.16;
+  const layoutIndex = Math.floor(layoutTime) % 3;
+  const transition = layoutTime % 1;
+  const ease = transition * transition * (3 - 2 * transition);
+  const skeletonRows = densityCount({ time, radius, density }, { base: 3, minimum: 2, maximum: 5 });
+  const branches = densityCount({ time, radius, density }, { base: 2, minimum: 1, maximum: 4 });
+  const branchStart = 2;
+  const merge = branchStart + branches;
+  const output = merge + 1;
+  const layoutPosition = (layout: number, index: number): readonly [number, number] => {
+    const branch = index - branchStart;
+    const spread = branches === 1 ? 0 : (branch / (branches - 1) - 0.5) * 0.86;
+    if (layout === 0) {
+      if (index === 0) return [-0.8, 0];
+      if (index === 1) return [-0.46, 0];
+      if (index === merge) return [0.42, 0];
+      if (index === output) return [0.78, 0];
+      return [-0.03, spread];
+    }
+    if (layout === 1) {
+      if (index === 0) return [-0.8, 0.3];
+      if (index === 1) return [-0.46, -0.15];
+      if (index === merge) return [0.42, 0.18];
+      if (index === output) return [0.78, -0.12];
+      return [-0.04 + (branch % 2 ? -0.05 : 0.05), -spread * 0.78 - 0.1];
+    }
+    if (index === 0) return [-0.8, -0.28];
+    if (index === 1) return [-0.46, 0.2];
+    if (index === merge) return [0.42, -0.2];
+    if (index === output) return [0.78, 0.24];
+    return [-0.02 + (branch % 2 ? 0.08 : -0.08), spread * 0.64 + (branch % 2 ? 0.08 : -0.08)];
+  };
+  const cards = Array.from({ length: output + 1 }, (_, index) => {
+    const current = layoutPosition(layoutIndex, index);
+    const next = layoutPosition((layoutIndex + 1) % 3, index);
+    const response = Math.sin(time * 1.35 - index * 0.86) * radius * 0.018;
+    return {
+      x: c + (current[0] + (next[0] - current[0]) * ease) * radius - cardWidth / 2 + response,
+      y: c + (current[1] + (next[1] - current[1]) * ease) * radius - cardHeight / 2 + response * (index % 2 ? -0.65 : 0.65),
+      z: index * 0.08,
+    };
+  });
+  const links = [
+    [0, 1],
+    ...Array.from({ length: branches }, (_, branch) => [1, branchStart + branch] as const),
+    ...Array.from({ length: branches }, (_, branch) => [branchStart + branch, merge] as const),
+    [merge, output],
+  ] as const;
+  links.forEach(([source, target], index) => {
+    const from = { x: cards[source].x + cardWidth, y: cards[source].y + cardHeight / 2, z: cards[source].z };
+    const to = { x: cards[target].x, y: cards[target].y + cardHeight / 2, z: cards[target].z };
+    addWorkflowConnector(frame, from, to, (time * 0.46 + index * 0.19) % 1, index === 5 ? 48 : index % 2 ? 196 : 32);
+  });
+  cards.forEach((card, index) => {
+    const active = Math.max(0, Math.sin(time * 0.78 - index * 0.95));
+    const tone = index === output ? 48 : index >= branchStart && index < merge ? 196 : 214;
+    addWorkflowCard(
       frame,
-      { x: c - radius * 0.7 + i * step, y: c - side / 2, width: side, height: side, z: fill },
-      0.18 + fill * 0.72,
-      200 - i * 8,
+      card.x,
+      card.y,
+      cardWidth,
+      cardHeight,
+      card.z,
+      0.3 + active * 0.54,
+      tone,
+      time,
+      index,
+      skeletonRows,
     );
-  }
+  });
   return frame;
 }
 
-/** Draws a checkpoint route whose next validation point advances over time. */
+/** Draws a checkpoint route where a courier confirms each reached stage before continuing. */
 export function checkpointFrame({ time, radius, density }: FrameContext): OrbFrame {
   const frame = createFrame();
   const c = center(radius);
-  const checks = densityCount({ time, radius, density }, { base: 5, minimum: 3, maximum: 10 });
-  const active = (time * 0.55) % checks;
+  const checks = densityCount({ time, radius, density }, { base: 5, minimum: 3, maximum: 9 });
+  const progress = (time * 0.26) % 1;
+  const active = progress * (checks - 1);
+  const pointAt = (index: number) => {
+    const p = index / Math.max(1, checks - 1);
+    return { x: c - radius * 0.7 + p * radius * 1.4, y: c + Math.sin(p * Math.PI * 2.1) * radius * 0.28, z: p };
+  };
   for (let i = 0; i < checks; i += 1) {
-    const x = c - radius * 0.68 + (i * radius * 1.36) / Math.max(1, checks - 1);
-    if (i)
-      addLine(
-        frame,
-        { x: c - radius * 0.68 + ((i - 1) * radius * 1.36) / Math.max(1, checks - 1), y: c, z: -0.4 },
-        { x, y: c, z: -0.4 },
-        0.2,
-        0.55,
-        205,
-      );
-    addDot(
-      frame,
-      { x, y: c, z: 0.4 },
-      0.62 + Math.max(0, 1 - Math.abs(i - active)) * 0.68,
-      0.32 + Math.max(0, 1 - Math.abs(i - active)) * 0.6,
-      148,
-    );
+    const point = pointAt(i);
+    if (i) addLine(frame, pointAt(i - 1), point, 0.2, 0.68, 214);
+    const completed = Math.max(0, Math.min(1, active - i + 1));
+    addArc(frame, { x: point.x, y: point.y, radius: radius * 0.07, startAngle: -Math.PI / 2, endAngle: -Math.PI / 2 + TAU * completed, width: 1.4, z: completed }, 0.24 + completed * 0.7, completed ? 144 : 214);
+    if (completed > 0.96) {
+      addLine(frame, { x: point.x - radius * 0.026, y: point.y, z: 1 }, { x: point.x - radius * 0.004, y: point.y + radius * 0.025, z: 1 }, 0.92, 1.2, 144);
+      addLine(frame, { x: point.x - radius * 0.004, y: point.y + radius * 0.025, z: 1 }, { x: point.x + radius * 0.038, y: point.y - radius * 0.035, z: 1 }, 0.92, 1.2, 144);
+    }
   }
+  const lower = Math.floor(active);
+  const local = active - lower;
+  const from = pointAt(lower);
+  const to = pointAt(Math.min(checks - 1, lower + 1));
+  addDot(frame, { x: from.x + (to.x - from.x) * local, y: from.y + (to.y - from.y) * local, z: 1 }, 1.1, 0.94, 38);
   return frame;
 }
 

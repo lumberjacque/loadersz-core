@@ -1,5 +1,5 @@
 import type { FrameContext, OrbFrame, ProjectedPoint } from './shared';
-import { addDot, addLine, createFrame, lerp, TAU } from './shared';
+import { addArc, addDot, addLine, createFrame, lerp, TAU } from './shared';
 
 const centerOf = (radius: number) => radius / 0.82;
 
@@ -131,27 +131,35 @@ export function gridFrame({ time, radius, density }: FrameContext): OrbFrame {
   return frame;
 }
 
-/** Builds `tracking`: a radar sweep that reveals points around a dotted range ring. */
+/** Builds `tracking`: a target leaves a projected path, a live trail, and a compact lock-on reticle. */
 export function radarFrame({ time, radius, density }: FrameContext): OrbFrame {
   const frame = createFrame();
   const center = centerOf(radius);
-  const segments = Math.max(30, Math.round(56 * density));
-  const sweep = time * 1.36;
-  for (let index = 0; index < segments; index += 1) {
-    const angle = (index / segments) * TAU;
-    const distance = (sweep - angle + TAU) % TAU;
-    const glow = Math.max(0.1, 1 - distance / 1.45);
-    addDot(
-      frame,
-      { x: center + Math.cos(angle) * radius * 0.66, y: center + Math.sin(angle) * radius * 0.66, z: glow - 0.2 },
-      0.32 + glow * 0.8,
-      0.1 + glow * 0.56,
-      164,
-    );
+  const samples = Math.max(18, Math.round(30 * density));
+  const position = (moment: number) => ({
+    x: center + Math.sin(moment * 0.82) * radius * 0.6,
+    y: center + Math.sin(moment * 1.47 + 0.8) * radius * 0.39,
+    z: Math.cos(moment * 0.64),
+  });
+  let previous: ReturnType<typeof position> | undefined;
+  for (let index = 0; index < samples; index += 1) {
+    const p = index / Math.max(1, samples - 1);
+    const point = position(time * 0.76 + p * 3.2);
+    if (previous) addLine(frame, previous, point, 0.1 + p * 0.24, 0.62, 214);
+    previous = point;
   }
-  const head = { x: center + Math.cos(sweep) * radius * 0.61, y: center + Math.sin(sweep) * radius * 0.61, z: 0.9 };
-  addLine(frame, { x: center, y: center, z: -0.2 }, head, 0.3, 0.7, 164);
-  addDot(frame, head, 0.76, 0.9, 164);
+  const trails = Math.max(4, Math.round(7 * density));
+  for (let index = 0; index < trails; index += 1) {
+    const p = index / trails;
+    const point = position(time * 0.76 - p * 1.2);
+    addDot(frame, point, 0.34 + (1 - p) * 0.62, 0.08 + (1 - p) * 0.58, 196);
+  }
+  const target = position(time * 0.76);
+  const lock = radius * (0.12 + (Math.sin(time * 3.2) + 1) * 0.012);
+  addArc(frame, { x: target.x, y: target.y, radius: lock, startAngle: 0, endAngle: TAU, width: 1.4, z: 0.9 }, 0.82, 38);
+  addLine(frame, { x: target.x - lock * 1.45, y: target.y, z: 1 }, { x: target.x + lock * 1.45, y: target.y, z: 1 }, 0.68, 1, 38);
+  addLine(frame, { x: target.x, y: target.y - lock * 1.45, z: 1 }, { x: target.x, y: target.y + lock * 1.45, z: 1 }, 0.68, 1, 38);
+  addDot(frame, target, 1.05, 0.96, 38);
   return frame;
 }
 
