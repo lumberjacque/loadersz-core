@@ -1,5 +1,5 @@
 import type { FrameContext, OrbFrame } from './shared';
-import { addArc, addLine, addRect, createFrame, TAU } from './shared';
+import { addArc, addDot, addLine, addRect, createFrame, TAU } from './shared';
 import { densityCount, safeThickness } from './shape-metrics';
 
 const centerOf = (radius: number) => radius / 0.82;
@@ -182,6 +182,74 @@ export function treemapFrame({ time, radius }: FrameContext): OrbFrame {
   return frame;
 }
 
+/** Builds `bubble-charting`: values share one circular packing field and continuously make room for the current leader. */
+export function bubbleChartFrame({ time, radius, density, particleRadius }: FrameContext): OrbFrame {
+  const frame = createFrame();
+  const center = centerOf(radius);
+  const count = densityCount({ time, radius, density }, { base: 8, minimum: 4, maximum: 12 });
+  const sizeMultiplier = particleRadius ?? 1;
+  const boundary = radius * 0.68;
+  const leader = (time * 0.3) % count;
+  const weights = Array.from({ length: count }, (_, index) => {
+    const distance = Math.min(Math.abs(index - leader), count - Math.abs(index - leader));
+    return 0.48 + Math.max(0, 1 - distance * 0.78) * 1.15;
+  });
+  const totalWeight = weights.reduce((total, weight) => total + weight, 0);
+  const bubbles = weights.map((weight, index) => {
+    const angle = index * 2.399963229728653 + time * 0.035;
+    const radial = Math.sqrt((index + 0.5) / count) * boundary * 0.66;
+    return {
+      x: center + Math.cos(angle) * radial,
+      y: center + Math.sin(angle) * radial,
+      radius: Math.sqrt((weight / totalWeight) * boundary * boundary * 0.62),
+      weight,
+      tone: [196, 278, 32, 48][index % 4],
+    };
+  });
+  const gap = Math.max(1.1, radius * 0.025);
+  for (let pass = 0; pass < 7; pass += 1) {
+    for (let left = 0; left < bubbles.length; left += 1) {
+      for (let right = left + 1; right < bubbles.length; right += 1) {
+        const dx = bubbles[right].x - bubbles[left].x;
+        const dy = bubbles[right].y - bubbles[left].y;
+        const distance = Math.hypot(dx, dy) || 0.001;
+        const minimum = bubbles[left].radius + bubbles[right].radius + gap;
+        if (distance >= minimum) continue;
+        const shift = ((minimum - distance) / distance) * 0.5;
+        const moveX = dx * shift;
+        const moveY = dy * shift;
+        bubbles[left].x -= moveX;
+        bubbles[left].y -= moveY;
+        bubbles[right].x += moveX;
+        bubbles[right].y += moveY;
+      }
+    }
+    for (const bubble of bubbles) {
+      const dx = bubble.x - center;
+      const dy = bubble.y - center;
+      const distance = Math.hypot(dx, dy) || 0.001;
+      const limit = boundary - bubble.radius - gap;
+      if (distance > limit) {
+        bubble.x = center + (dx / distance) * limit;
+        bubble.y = center + (dy / distance) * limit;
+      }
+    }
+  }
+  addArc(frame, { x: center, y: center, radius: boundary, startAngle: 0, endAngle: TAU, width: 0.8, z: -0.8 }, 0.12, 214);
+  const maximumWeight = Math.max(...weights);
+  for (const bubble of bubbles) {
+    const emphasis = bubble.weight / maximumWeight;
+    addDot(
+      frame,
+      { x: bubble.x, y: bubble.y, z: emphasis },
+      bubble.radius / sizeMultiplier,
+      0.26 + emphasis * 0.64,
+      bubble.tone,
+    );
+  }
+  return frame;
+}
+
 /** Builds `areamapping`: a continuous area chart rises and falls beneath an animated signal trace. */
 export function areaFrame({ time, radius, density }: FrameContext): OrbFrame {
   const frame = createFrame();
@@ -189,7 +257,8 @@ export function areaFrame({ time, radius, density }: FrameContext): OrbFrame {
   const samples = Math.max(22, Math.round(42 * density));
   const chartWidth = radius * 1.58;
   const baseline = center + radius * 0.52;
-  const width = chartWidth / samples;
+  const step = chartWidth / Math.max(1, samples - 1);
+  const barWidth = step + 0.6;
   let previous: { x: number; y: number; z: number } | undefined;
   for (let index = 0; index < samples; index += 1) {
     const progress = index / (samples - 1);
@@ -198,9 +267,14 @@ export function areaFrame({ time, radius, density }: FrameContext): OrbFrame {
       (Math.sin(progress * TAU * 1.55 - time * 1.2) * 0.23 +
         Math.sin(progress * TAU * 3.3 + time * 0.68) * 0.11 +
         0.34);
-    const x = center - chartWidth / 2 + index * width;
+    const x = center - chartWidth / 2 + index * step;
     const y = baseline - value * radius * 1.35;
-    addRect(frame, { x, y, width: width + 0.4, height: baseline - y, z: value }, 0.12 + value * 0.24, 184);
+    addRect(
+      frame,
+      { x: x - barWidth / 2, y, width: barWidth, height: baseline - y, z: value },
+      0.12 + value * 0.24,
+      184,
+    );
     const point = { x, y, z: value };
     if (previous) addLine(frame, previous, point, 0.8, 0.8, 184);
     previous = point;

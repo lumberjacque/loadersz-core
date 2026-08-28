@@ -7,6 +7,7 @@ import {
   auroraFrame,
   areaFrame,
   barChartFrame,
+  bubbleChartFrame,
   bufferFrame,
   beatsFrame,
   branchFrame,
@@ -214,4 +215,5 @@ export const summarizing = defineMode('summarizing', donutFrame);
 export const gauging = defineMode('gauging', gaugeFrame);
 export const funneling = defineMode('funneling', funnelFrame);
 export const treemapping = defineMode('treemapping', treemapFrame);
+export const bubbleCharting = defineMode('bubble-charting', bubbleChartFrame);
 export const areamapping = defineMode('areamapping', areaFrame);

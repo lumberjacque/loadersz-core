@@ -48,7 +48,7 @@ function shade(
 }
 
 /**
- * Paints frame rectangles, polygons, arcs, lines and depth-sorted dots onto a Canvas 2D context.
+ * Paints frame rectangles, arcs, lines and depth-sorted dots onto a Canvas 2D context.
  *
  * @param context Target Canvas 2D context.
  * @param frame Geometry produced by a frame builder.
@@ -73,19 +73,6 @@ export function paintFrame(
       context.globalAlpha = usesColorOverride ? rect.alpha : 1;
       context.fillStyle = shade(theme, rect, rect.alpha, rect.tone, hueOverride, colorOverride);
       fillRoundedRect(context, rect.x, rect.y, rect.width, rect.height, particleRadius * 1.65);
-    });
-  [...frame.polygons]
-    .sort((left, right) => left.z - right.z)
-    .forEach((polygon) => {
-      context.globalAlpha = usesColorOverride ? polygon.alpha : 1;
-      context.fillStyle = shade(theme, polygon, polygon.alpha, polygon.tone, hueOverride, colorOverride);
-      context.beginPath();
-      context.moveTo(polygon.points[0].x, polygon.points[0].y);
-      for (let index = 1; index < polygon.points.length; index += 1) {
-        context.lineTo(polygon.points[index].x, polygon.points[index].y);
-      }
-      context.closePath();
-      context.fill();
     });
   for (const arc of frame.arcs) {
     context.globalAlpha = usesColorOverride ? arc.alpha : 1;

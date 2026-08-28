@@ -135,7 +135,7 @@ export type OrbMode =
   | 'scanner'
   | 'compile'
   | 'pagination'
-  | 'reconnect'
+  | 'bubblechart'
   | 'sankey'
   | 'radarplot'
   | 'gantt'
@@ -288,7 +288,7 @@ export type OrbState =
   | 'scanning'
   | 'compiling'
   | 'paginating'
-  | 'reconnecting'
+  | 'bubble-charting'
   | 'sankeying'
   | 'radaring'
   | 'scheduling'
@@ -400,23 +400,12 @@ export interface OrbArc extends ProjectedPoint {
   cap?: 'round' | 'butt';
 }
 
-/** A filled polygon, used for angular interface surfaces and isometric visual states. */
-export interface OrbPolygon extends ProjectedPoint {
-  /** Ordered canvas vertices. A polygon always contains at least three points. */
-  points: readonly ProjectedPoint[];
-  /** Opacity of the filled polygon. */
-  alpha: number;
-  /** Optional HSL hue used by colourful modes. */
-  tone?: number;
-}
-
 /** Complete geometry for one canvas frame. Builders create this; the renderer paints it. */
 export interface OrbFrame {
   dots: Dot[];
   lines: OrbLine[];
   rects: OrbRect[];
   arcs: OrbArc[];
-  polygons: OrbPolygon[];
 }
 
 /** Values supplied to each pure frame builder. `time` is measured in seconds. */
