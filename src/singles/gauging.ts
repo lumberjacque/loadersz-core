@@ -1,5 +1,5 @@
 import { createFixedModeElement, createFixedModeLoader } from '../core/FixedLoader';
-import { gaugeFrame } from '../core/modes';
+import { gaugeFrame } from '../core/modes/data-charts';
 
 export type { LoaderszSingleModeOptions } from '../core/FixedLoader';
 

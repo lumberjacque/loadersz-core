@@ -1,5 +1,5 @@
 import { createFixedModeElement, createFixedModeLoader } from '../core/FixedLoader';
-import { bubbleChartFrame } from '../core/modes';
+import { bubbleChartFrame } from '../core/modes/data-charts';
 
 /** Fixed state registered by this entry point. */
 export const state = 'bubble-charting' as const;
