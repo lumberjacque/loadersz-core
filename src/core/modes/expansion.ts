@@ -33,16 +33,38 @@ function addWorkflowCard(
     for (let control = 0; control < 3; control += 1) {
       addRect(
         frame,
-        { x: x + width * (0.18 + control * 0.2), y: y + height * 0.2, width: width * 0.13, height: height * 0.1, z: z + 0.03 },
+        {
+          x: x + width * (0.18 + control * 0.2),
+          y: y + height * 0.2,
+          width: width * 0.13,
+          height: height * 0.1,
+          z: z + 0.03,
+        },
         alpha * 0.26,
       );
     }
   } else if (variant % 4 === 2) {
-    addRect(frame, { x: x + width * 0.18, y: y + height * 0.16, width: width * 0.26, height: height * 0.15, z: z + 0.03 }, alpha * 0.26);
-    addRect(frame, { x: x + width * 0.5, y: y + height * 0.16, width: width * 0.32, height: height * 0.15, z: z + 0.03 }, alpha * 0.2);
+    addRect(
+      frame,
+      { x: x + width * 0.18, y: y + height * 0.16, width: width * 0.26, height: height * 0.15, z: z + 0.03 },
+      alpha * 0.26,
+    );
+    addRect(
+      frame,
+      { x: x + width * 0.5, y: y + height * 0.16, width: width * 0.32, height: height * 0.15, z: z + 0.03 },
+      alpha * 0.2,
+    );
   } else {
-    addRect(frame, { x: x + width * 0.18, y: y + height * 0.16, width: width * 0.18, height: height * 0.15, z: z + 0.03 }, alpha * 0.24);
-    addRect(frame, { x: x + width * 0.42, y: y + height * 0.16, width: width * 0.4, height: height * 0.15, z: z + 0.03 }, alpha * 0.22);
+    addRect(
+      frame,
+      { x: x + width * 0.18, y: y + height * 0.16, width: width * 0.18, height: height * 0.15, z: z + 0.03 },
+      alpha * 0.24,
+    );
+    addRect(
+      frame,
+      { x: x + width * 0.42, y: y + height * 0.16, width: width * 0.4, height: height * 0.15, z: z + 0.03 },
+      alpha * 0.22,
+    );
   }
   const rowHeight = height / (skeletonRows + 2);
   for (let row = 0; row < skeletonRows; row += 1) {
@@ -67,7 +89,12 @@ function addWorkflowCard(
       );
     }
   }
-  addRect(frame, { x: x + width * 0.08, y: y + height * 0.12, width: width * 0.06, height: height * 0.76, z: z + 0.02 }, alpha * 0.75, tone);
+  addRect(
+    frame,
+    { x: x + width * 0.08, y: y + height * 0.12, width: width * 0.06, height: height * 0.76, z: z + 0.02 },
+    alpha * 0.75,
+    tone,
+  );
 }
 
 function addWorkflowConnector(
@@ -85,9 +112,21 @@ function addWorkflowConnector(
   const pointAt = (t: number): ProjectedPoint => {
     const inverse = 1 - t;
     return {
-      x: inverse ** 3 * from.x + 3 * inverse ** 2 * t * controls[0].x + 3 * inverse * t ** 2 * controls[1].x + t ** 3 * to.x,
-      y: inverse ** 3 * from.y + 3 * inverse ** 2 * t * controls[0].y + 3 * inverse * t ** 2 * controls[1].y + t ** 3 * to.y,
-      z: inverse ** 3 * from.z + 3 * inverse ** 2 * t * controls[0].z + 3 * inverse * t ** 2 * controls[1].z + t ** 3 * to.z,
+      x:
+        inverse ** 3 * from.x +
+        3 * inverse ** 2 * t * controls[0].x +
+        3 * inverse * t ** 2 * controls[1].x +
+        t ** 3 * to.x,
+      y:
+        inverse ** 3 * from.y +
+        3 * inverse ** 2 * t * controls[0].y +
+        3 * inverse * t ** 2 * controls[1].y +
+        t ** 3 * to.y,
+      z:
+        inverse ** 3 * from.z +
+        3 * inverse ** 2 * t * controls[0].z +
+        3 * inverse * t ** 2 * controls[1].z +
+        t ** 3 * to.z,
     };
   };
   let previous = pointAt(0);
@@ -450,7 +489,11 @@ export function batchFrame({ time, radius, density, particleRadius }: FrameConte
     const response = Math.sin(time * 1.35 - index * 0.86) * radius * 0.018;
     return {
       x: c + (current[0] + (next[0] - current[0]) * ease) * radius - cardWidth / 2 + response,
-      y: c + (current[1] + (next[1] - current[1]) * ease) * radius - cardHeight / 2 + response * (index % 2 ? -0.65 : 0.65),
+      y:
+        c +
+        (current[1] + (next[1] - current[1]) * ease) * radius -
+        cardHeight / 2 +
+        response * (index % 2 ? -0.65 : 0.65),
       z: index * 0.08,
     };
   });
@@ -500,10 +543,37 @@ export function checkpointFrame({ time, radius, density }: FrameContext): OrbFra
     const point = pointAt(i);
     if (i) addLine(frame, pointAt(i - 1), point, 0.2, 0.68, 214);
     const completed = Math.max(0, Math.min(1, active - i + 1));
-    addArc(frame, { x: point.x, y: point.y, radius: radius * 0.07, startAngle: -Math.PI / 2, endAngle: -Math.PI / 2 + TAU * completed, width: 1.4, z: completed }, 0.24 + completed * 0.7, completed ? 144 : 214);
+    addArc(
+      frame,
+      {
+        x: point.x,
+        y: point.y,
+        radius: radius * 0.07,
+        startAngle: -Math.PI / 2,
+        endAngle: -Math.PI / 2 + TAU * completed,
+        width: 1.4,
+        z: completed,
+      },
+      0.24 + completed * 0.7,
+      completed ? 144 : 214,
+    );
     if (completed > 0.96) {
-      addLine(frame, { x: point.x - radius * 0.026, y: point.y, z: 1 }, { x: point.x - radius * 0.004, y: point.y + radius * 0.025, z: 1 }, 0.92, 1.2, 144);
-      addLine(frame, { x: point.x - radius * 0.004, y: point.y + radius * 0.025, z: 1 }, { x: point.x + radius * 0.038, y: point.y - radius * 0.035, z: 1 }, 0.92, 1.2, 144);
+      addLine(
+        frame,
+        { x: point.x - radius * 0.026, y: point.y, z: 1 },
+        { x: point.x - radius * 0.004, y: point.y + radius * 0.025, z: 1 },
+        0.92,
+        1.2,
+        144,
+      );
+      addLine(
+        frame,
+        { x: point.x - radius * 0.004, y: point.y + radius * 0.025, z: 1 },
+        { x: point.x + radius * 0.038, y: point.y - radius * 0.035, z: 1 },
+        0.92,
+        1.2,
+        144,
+      );
     }
   }
   const lower = Math.floor(active);

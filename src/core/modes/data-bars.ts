@@ -53,12 +53,7 @@ export function comparisonFrame({ time, radius, density, particleRadius }: Frame
     const right = 0.24 + wave(time + 1.2, row, 1.1, 2.43) * 0.56;
     addRect(frame, { x: center - trackWidth / 2, y, width: trackWidth, height: barHeight, z: -0.8 }, 0.08, 220);
     addRect(frame, { x: center - trackWidth / 2, y, width: halfTrack * left, height: barHeight, z: left }, 0.78, 198);
-    addRect(
-      frame,
-      { x: center + centerGap / 2, y, width: halfTrack * right, height: barHeight, z: right },
-      0.78,
-      286,
-    );
+    addRect(frame, { x: center + centerGap / 2, y, width: halfTrack * right, height: barHeight, z: right }, 0.78, 286);
   }
   return frame;
 }

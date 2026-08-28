@@ -85,7 +85,21 @@ export function gaugeFrame(context: FrameContext): OrbFrame {
       tone,
     );
   }
-  addArc(frame, { x: center, y: dialY, radius: radius * 0.7, startAngle: start + sweep * (target - 0.07), endAngle: start + sweep * (target + 0.07), width: Math.max(1, thickness * 0.36), z: 0.4, cap: 'butt' }, 0.8, 144);
+  addArc(
+    frame,
+    {
+      x: center,
+      y: dialY,
+      radius: radius * 0.7,
+      startAngle: start + sweep * (target - 0.07),
+      endAngle: start + sweep * (target + 0.07),
+      width: Math.max(1, thickness * 0.36),
+      z: 0.4,
+      cap: 'butt',
+    },
+    0.8,
+    144,
+  );
   for (let tick = 0; tick <= ticks; tick += 1) {
     const angle = start + (tick / ticks) * sweep;
     const outer = radius * 0.72;
@@ -102,14 +116,7 @@ export function gaugeFrame(context: FrameContext): OrbFrame {
   const angle = start + sweep * value;
   const needleX = center + Math.cos(angle) * radius * 0.5;
   const needleY = dialY + Math.sin(angle) * radius * 0.5;
-  addLine(
-    frame,
-    { x: center, y: dialY, z: 0.2 },
-    { x: needleX, y: needleY, z: 0.9 },
-    0.88,
-    radius * 0.035,
-    42,
-  );
+  addLine(frame, { x: center, y: dialY, z: 0.2 }, { x: needleX, y: needleY, z: 0.9 }, 0.88, radius * 0.035, 42);
   const peakAngle = start + sweep * Math.max(value, target);
   addLine(
     frame,
@@ -119,7 +126,20 @@ export function gaugeFrame(context: FrameContext): OrbFrame {
     1.6,
     48,
   );
-  addArc(frame, { x: center, y: dialY, radius: radius * 0.17, startAngle: 0, endAngle: TAU, width: Math.max(1.2, thickness * 0.32), z: 0.8 }, 0.62, 214);
+  addArc(
+    frame,
+    {
+      x: center,
+      y: dialY,
+      radius: radius * 0.17,
+      startAngle: 0,
+      endAngle: TAU,
+      width: Math.max(1.2, thickness * 0.32),
+      z: 0.8,
+    },
+    0.62,
+    214,
+  );
   return frame;
 }
 
@@ -235,7 +255,12 @@ export function bubbleChartFrame({ time, radius, density, particleRadius }: Fram
       }
     }
   }
-  addArc(frame, { x: center, y: center, radius: boundary, startAngle: 0, endAngle: TAU, width: 0.8, z: -0.8 }, 0.12, 214);
+  addArc(
+    frame,
+    { x: center, y: center, radius: boundary, startAngle: 0, endAngle: TAU, width: 0.8, z: -0.8 },
+    0.12,
+    214,
+  );
   const maximumWeight = Math.max(...weights);
   for (const bubble of bubbles) {
     const emphasis = bubble.weight / maximumWeight;
