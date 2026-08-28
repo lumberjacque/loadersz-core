@@ -173,7 +173,13 @@ export function profileFrame({ time, radius, density }: FrameContext): OrbFrame 
       const p = i / 17;
       if (p > width) continue;
       const hot = Math.max(0, 1 - Math.abs(p / width - head) * 8);
-      addDot(frame, { x: c + (p - 0.5) * radius * 1.62, y, z: hot }, 0.44 + hot * 0.68, 0.18 + hot * 0.7, 18 + row * 22);
+      addDot(
+        frame,
+        { x: c + (p - 0.5) * radius * 1.62, y, z: hot },
+        0.44 + hot * 0.68,
+        0.18 + hot * 0.7,
+        18 + row * 22,
+      );
     }
   }
   return frame;
@@ -300,7 +306,7 @@ export function flowmapFrame({ time, radius, density }: FrameContext): OrbFrame 
   const frame = createFrame();
   const c = centerOf(radius);
   const routeCount = Math.max(3, Math.min(7, Math.round(3 * density)));
-  const routes = Array.from({ length: routeCount }, (_, route) => ((route / Math.max(1, routeCount - 1)) - 0.5) * 0.76);
+  const routes = Array.from({ length: routeCount }, (_, route) => (route / Math.max(1, routeCount - 1) - 0.5) * 0.76);
   const packets = Math.max(2, Math.round(4 * density));
   routes.forEach((offset, route) => {
     let prev: ProjectedPoint | undefined;

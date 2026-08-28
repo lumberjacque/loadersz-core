@@ -10,9 +10,9 @@ describe('orb modes', () => {
     expect(frame.dots.every((dot) => Number.isFinite(dot.x) && Number.isFinite(dot.y) && Number.isFinite(dot.z))).toBe(
       true,
     );
-    expect(frame.rects.every((rect) => Number.isFinite(rect.x) && Number.isFinite(rect.y) && Number.isFinite(rect.z))).toBe(
-      true,
-    );
+    expect(
+      frame.rects.every((rect) => Number.isFinite(rect.x) && Number.isFinite(rect.y) && Number.isFinite(rect.z)),
+    ).toBe(true);
     expect(frame.arcs.every((arc) => Number.isFinite(arc.x) && Number.isFinite(arc.y) && Number.isFinite(arc.z))).toBe(
       true,
     );

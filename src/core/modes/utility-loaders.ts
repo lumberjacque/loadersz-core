@@ -86,7 +86,10 @@ export function waveformFrame({ time, radius, density }: FrameContext): OrbFrame
       const progress = index / (samples - 1);
       const x = center + (progress - 0.5) * radius * 1.6;
       const envelope = 0.26 + Math.sin(progress * Math.PI) * 0.74;
-      const y = center + (trace - (traces - 1) / 2) * radius * 0.08 + Math.sin(progress * TAU * 2.4 + time * 2.3 + trace * 0.5) * radius * 0.32 * envelope;
+      const y =
+        center +
+        (trace - (traces - 1) / 2) * radius * 0.08 +
+        Math.sin(progress * TAU * 2.4 + time * 2.3 + trace * 0.5) * radius * 0.32 * envelope;
       const point = { x, y, z: envelope * 0.45 };
       if (previous) addLine(frame, previous, point, 0.1 + trace * 0.025, 0.28, 178 + trace * 12);
       previous = point;
@@ -157,8 +160,22 @@ export function radarFrame({ time, radius, density }: FrameContext): OrbFrame {
   const target = position(time * 0.76);
   const lock = radius * (0.12 + (Math.sin(time * 3.2) + 1) * 0.012);
   addArc(frame, { x: target.x, y: target.y, radius: lock, startAngle: 0, endAngle: TAU, width: 1.4, z: 0.9 }, 0.82, 38);
-  addLine(frame, { x: target.x - lock * 1.45, y: target.y, z: 1 }, { x: target.x + lock * 1.45, y: target.y, z: 1 }, 0.68, 1, 38);
-  addLine(frame, { x: target.x, y: target.y - lock * 1.45, z: 1 }, { x: target.x, y: target.y + lock * 1.45, z: 1 }, 0.68, 1, 38);
+  addLine(
+    frame,
+    { x: target.x - lock * 1.45, y: target.y, z: 1 },
+    { x: target.x + lock * 1.45, y: target.y, z: 1 },
+    0.68,
+    1,
+    38,
+  );
+  addLine(
+    frame,
+    { x: target.x, y: target.y - lock * 1.45, z: 1 },
+    { x: target.x, y: target.y + lock * 1.45, z: 1 },
+    0.68,
+    1,
+    38,
+  );
   addDot(frame, target, 1.05, 0.96, 38);
   return frame;
 }
@@ -276,7 +293,7 @@ export function streamFrame({ time, radius, density }: FrameContext): OrbFrame {
   const lanes = Math.max(3, Math.min(7, Math.round(3 * density)));
   const packets = Math.max(4, Math.round(7 * density));
   for (let lane = 0; lane < lanes; lane += 1) {
-    const offset = (lane - (lanes - 1) / 2) * (radius * 0.72 / Math.max(1, lanes - 1));
+    const offset = (lane - (lanes - 1) / 2) * ((radius * 0.72) / Math.max(1, lanes - 1));
     let previous: ProjectedPoint | undefined;
     for (let sample = 0; sample <= 26; sample += 1) {
       const progress = sample / 26;
