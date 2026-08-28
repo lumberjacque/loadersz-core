@@ -79,20 +79,29 @@ export function waveformFrame({ time, radius, density }: FrameContext): OrbFrame
   const frame = createFrame();
   const center = centerOf(radius);
   const samples = Math.max(28, Math.round(68 * density));
-  let previous: ProjectedPoint | undefined;
-  for (let index = 0; index < samples; index += 1) {
-    const progress = index / (samples - 1);
-    const x = center + (progress - 0.5) * radius * 1.6;
-    const envelope = 0.26 + Math.sin(progress * Math.PI) * 0.74;
-    const y = center + Math.sin(progress * TAU * 2.4 + time * 2.3) * radius * 0.32 * envelope;
-    const point = { x, y, z: envelope * 0.45 };
-    if (previous) addLine(frame, previous, point, 0.16, 0.28, 178);
-    previous = point;
+  const traces = Math.max(1, Math.min(3, Math.round(density * 1.5)));
+  for (let trace = 0; trace < traces; trace += 1) {
+    let previous: ProjectedPoint | undefined;
+    for (let index = 0; index < samples; index += 1) {
+      const progress = index / (samples - 1);
+      const x = center + (progress - 0.5) * radius * 1.6;
+      const envelope = 0.26 + Math.sin(progress * Math.PI) * 0.74;
+      const y = center + (trace - (traces - 1) / 2) * radius * 0.08 + Math.sin(progress * TAU * 2.4 + time * 2.3 + trace * 0.5) * radius * 0.32 * envelope;
+      const point = { x, y, z: envelope * 0.45 };
+      if (previous) addLine(frame, previous, point, 0.1 + trace * 0.025, 0.28, 178 + trace * 12);
+      previous = point;
+    }
   }
   const head = (time * 0.32) % 1;
   const x = center + (head - 0.5) * radius * 1.6;
-  const y = center + Math.sin(head * TAU * 2.4 + time * 2.3) * radius * 0.32 * (0.26 + Math.sin(head * Math.PI) * 0.74);
-  addDot(frame, { x, y, z: 0.9 }, 1.52, 0.96, 178);
+  const envelope = 0.26 + Math.sin(head * Math.PI) * 0.74;
+  for (let trace = 0; trace < traces; trace += 1) {
+    const y =
+      center +
+      (trace - (traces - 1) / 2) * radius * 0.08 +
+      Math.sin(head * TAU * 2.4 + time * 2.3 + trace * 0.5) * radius * 0.32 * envelope;
+    addDot(frame, { x, y, z: 0.9 }, 1.52, 0.96, 178 + trace * 12);
+  }
   return frame;
 }
 
