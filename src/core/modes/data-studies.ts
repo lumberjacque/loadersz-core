@@ -199,8 +199,8 @@ export function aggregateFrame({ time, radius, density }: FrameContext): OrbFram
   const c = centerOf(radius);
   const count = Math.max(18, Math.round(34 * density));
   for (let i = 0; i < count; i += 1) {
-    const p = (time * 0.22 + i / count) % 1;
-    const a = i * 2.4 + time;
+    const p = (time * 0.16 + i / count) % 1;
+    const a = i * 2.4 + time * 0.72;
     const r = radius * (0.72 - p * 0.56);
     addDot(
       frame,
@@ -210,7 +210,6 @@ export function aggregateFrame({ time, radius, density }: FrameContext): OrbFram
       162,
     );
   }
-  addDot(frame, { x: c, y: c, z: 1 }, 1.25, 0.92, 162);
   return frame;
 }
 

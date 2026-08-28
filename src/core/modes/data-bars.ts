@@ -39,6 +39,8 @@ export function comparisonFrame({ time, radius, density, particleRadius }: Frame
   const center = centerOf(radius);
   const rows = densityCount({ time, radius, density }, { base: 4, minimum: 3, maximum: 8 });
   const trackWidth = radius * 1.34;
+  const centerGap = Math.max(2, trackWidth * 0.055);
+  const halfTrack = (trackWidth - centerGap) / 2;
   const barHeight = safeThickness(
     { time, radius, density, particleRadius },
     radius * 0.105,
@@ -50,10 +52,10 @@ export function comparisonFrame({ time, radius, density, particleRadius }: Frame
     const left = 0.24 + wave(time, row, 0.92, 1.77) * 0.56;
     const right = 0.24 + wave(time + 1.2, row, 1.1, 2.43) * 0.56;
     addRect(frame, { x: center - trackWidth / 2, y, width: trackWidth, height: barHeight, z: -0.8 }, 0.08, 220);
-    addRect(frame, { x: center - trackWidth / 2, y, width: trackWidth * left, height: barHeight, z: left }, 0.78, 198);
+    addRect(frame, { x: center - trackWidth / 2, y, width: halfTrack * left, height: barHeight, z: left }, 0.78, 198);
     addRect(
       frame,
-      { x: center + trackWidth / 2 - trackWidth * right, y, width: trackWidth * right, height: barHeight, z: right },
+      { x: center + centerGap / 2, y, width: halfTrack * right, height: barHeight, z: right },
       0.78,
       286,
     );

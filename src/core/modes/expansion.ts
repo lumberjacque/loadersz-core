@@ -92,7 +92,13 @@ export function compileFrame({ time, radius, density, particleRadius }: FrameCon
   const frame = createFrame();
   const c = center(radius);
   const rows = densityCount({ time, radius, density }, { base: 5, minimum: 3, maximum: 9 });
-  const h = safeThickness({ time, radius, density, particleRadius }, radius * 0.1, radius * 0.25, radius * 0.05);
+  const rowPitch = (radius * 1.04) / rows;
+  const h = safeThickness(
+    { time, radius, density, particleRadius },
+    radius * 0.1,
+    rowPitch,
+    Math.min(radius * 0.05, rowPitch * 0.22),
+  );
   for (let row = 0; row < rows; row += 1) {
     const done = pulse(time, row * 1.8, 0.8);
     addRect(
@@ -380,7 +386,13 @@ export function priorityFrame({ time, radius, density, particleRadius }: FrameCo
   const frame = createFrame();
   const c = center(radius);
   const cards = densityCount({ time, radius, density }, { base: 4, minimum: 3, maximum: 7 });
-  const h = safeThickness({ time, radius, density, particleRadius }, radius * 0.13, radius * 0.27, radius * 0.06);
+  const cardPitch = (radius * 1.04) / cards;
+  const h = safeThickness(
+    { time, radius, density, particleRadius },
+    radius * 0.13,
+    cardPitch,
+    Math.min(radius * 0.06, cardPitch * 0.22),
+  );
   for (let i = 0; i < cards; i += 1) {
     const score = pulse(time, i * 1.7, 0.7);
     addRect(
@@ -434,7 +446,7 @@ export function driftFrame({ time, radius, density }: FrameContext): OrbFrame {
     addDot(
       frame,
       { x: c - radius * 0.75 + p * radius * 1.5, y: c + Math.sin(i * 2.4 + time * 0.5) * radius * 0.35, z: p },
-      0.25 + p * 0.5,
+      0.4 + p * 0.58,
       0.1 + p * 0.55,
       202,
     );

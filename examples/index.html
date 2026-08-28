@@ -504,6 +504,7 @@
       search.addEventListener("input", () => {
         const query = search.value.trim().toLowerCase();
         let visible = 0;
+        let firstMatch;
         sections.forEach((section) => {
           let sectionVisible = 0;
           section.querySelectorAll("article").forEach((card) => {
@@ -512,11 +513,13 @@
             if (matches) {
               sectionVisible += 1;
               visible += 1;
+              firstMatch ||= card;
             }
           });
           section.hidden = sectionVisible === 0;
         });
         empty.classList.toggle("is-visible", visible === 0);
+        if (query && firstMatch) selectCard(firstMatch);
       });
 
       const update = () => {
