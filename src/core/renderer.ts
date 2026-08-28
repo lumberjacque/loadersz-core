@@ -77,8 +77,8 @@ export function paintFrame(
   for (const arc of frame.arcs) {
     context.globalAlpha = usesColorOverride ? arc.alpha : 1;
     context.strokeStyle = shade(theme, arc, arc.alpha, arc.tone, hueOverride, colorOverride);
-    context.lineWidth = arc.width * particleRadius;
-    context.lineCap = 'round';
+    context.lineWidth = arc.width;
+    context.lineCap = arc.cap ?? 'round';
     context.beginPath();
     context.arc(arc.x, arc.y, arc.radius, arc.startAngle, arc.endAngle);
     context.stroke();

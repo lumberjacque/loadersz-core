@@ -72,7 +72,16 @@ export function addRect(
  */
 export function addArc(
   frame: OrbFrame,
-  arc: { x: number; y: number; radius: number; startAngle: number; endAngle: number; width: number; z?: number },
+  arc: {
+    x: number;
+    y: number;
+    radius: number;
+    startAngle: number;
+    endAngle: number;
+    width: number;
+    z?: number;
+    cap?: 'round' | 'butt';
+  },
   alpha = 1,
   tone?: number,
 ): void {

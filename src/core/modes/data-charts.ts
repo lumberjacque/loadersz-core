@@ -12,12 +12,19 @@ export function donutFrame(context: FrameContext): OrbFrame {
   const center = centerOf(radius);
   const segments = densityCount(context, { base: 4, minimum: 3, maximum: 10 });
   const step = TAU / segments;
-  const gap = Math.min(0.14, step * 0.28);
+  const gap = Math.min(0.038, step * 0.06);
   const thickness = safeThickness(context, radius * 0.16, radius * 0.3, radius * 0.05);
   const tones = [18, 44, 194];
+  const activeSegment = (time * 0.48) % segments;
+  const weights = Array.from({ length: segments }, (_, index) => {
+    const distance = Math.min(Math.abs(index - activeSegment), segments - Math.abs(index - activeSegment));
+    return 0.72 + Math.max(0, 1 - distance * 0.72) * 0.72;
+  });
+  const totalWeight = weights.reduce((total, weight) => total + weight, 0);
+  let angle = -Math.PI / 2;
   for (let index = 0; index < segments; index += 1) {
-    const fill = 0.36 + oscillate(time, index * 1.81, 0.68) * 0.55;
-    const startAngle = -Math.PI / 2 + index * step + gap / 2;
+    const span = (TAU - gap * segments) * (weights[index] / totalWeight);
+    const startAngle = angle + gap / 2;
     addArc(
       frame,
       {
@@ -25,13 +32,15 @@ export function donutFrame(context: FrameContext): OrbFrame {
         y: center,
         radius: radius * 0.52,
         startAngle,
-        endAngle: startAngle + (step - gap) * fill,
+        endAngle: startAngle + span,
         width: thickness,
         z: index / segments,
+        cap: 'butt',
       },
       0.82,
       tones[index % tones.length],
     );
+    angle += span + gap;
   }
   addArc(
     frame,

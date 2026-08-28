@@ -396,6 +396,8 @@ export interface OrbArc extends ProjectedPoint {
   alpha: number;
   /** Optional HSL hue used by colourful modes. */
   tone?: number;
+  /** End-cap shape. `round` is the default; `butt` preserves precise segment gaps. */
+  cap?: 'round' | 'butt';
 }
 
 /** Complete geometry for one canvas frame. Builders create this; the renderer paints it. */
