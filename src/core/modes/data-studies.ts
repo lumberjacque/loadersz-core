@@ -300,7 +300,8 @@ export function correlationFrame({ time, radius, density }: FrameContext): OrbFr
 export function flowmapFrame({ time, radius, density }: FrameContext): OrbFrame {
   const frame = createFrame();
   const c = centerOf(radius);
-  const routes = [-0.38, 0, 0.38];
+  const routeCount = Math.max(3, Math.min(7, Math.round(3 * density)));
+  const routes = Array.from({ length: routeCount }, (_, route) => ((route / Math.max(1, routeCount - 1)) - 0.5) * 0.76);
   const packets = Math.max(2, Math.round(4 * density));
   routes.forEach((offset, route) => {
     let prev: ProjectedPoint | undefined;
