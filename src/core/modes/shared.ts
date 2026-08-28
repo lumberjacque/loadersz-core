@@ -1,4 +1,4 @@
-import { addDot, addLine, createFrame, depth } from '../frame';
+import { addArc, addDot, addLine, addRect, createFrame, depth } from '../frame';
 import { fibonacciPoint, hash, lerp, normalize, smoothstep, TAU } from '../math';
 import { projectPoint } from '../projector';
 import type { FrameContext, OrbFrame, OrbMode, ProjectedPoint, Vector3 } from '../types';
@@ -29,5 +29,5 @@ export function sphereDots(
   return frame;
 }
 
-export { addDot, addLine, createFrame, depth, fibonacciPoint, hash, lerp, normalize, smoothstep, TAU };
+export { addArc, addDot, addLine, addRect, createFrame, depth, fibonacciPoint, hash, lerp, normalize, smoothstep, TAU };
 export type { FrameContext, OrbFrame, OrbMode, ProjectedPoint, Vector3 };

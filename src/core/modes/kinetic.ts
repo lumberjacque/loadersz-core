@@ -70,11 +70,11 @@ export function bubblesFrame({ time, radius, density }: FrameContext): OrbFrame 
   const bubbles = Math.round(58 * density);
   for (let bubble = 0; bubble < bubbles; bubble += 1) {
     const seed = hash(bubble * 5.73);
-    const cycle = (time * (0.34 + seed * 0.48) + seed) % 1;
+    const cycle = (time * (0.23 + seed * 0.32) + seed) % 1;
     const x = Math.sin(seed * 18 + cycle * 4.8) * (0.18 + seed * 0.66);
     const y = 1.15 - cycle * 2.3;
     const z = Math.cos(seed * 22 + cycle * 3.6) * (0.22 + seed * 0.68);
-    const shimmer = (Math.sin(time * 4 + bubble * 1.9) + 1) / 2;
+    const shimmer = (Math.sin(time * 2.7 + bubble * 1.9) + 1) / 2;
     const point = { x: center + x * radius, y: center + y * radius, z };
     addDot(frame, point, 0.45 + seed * 1.5 + shimmer * 0.9, 0.14 + (1 - cycle) * 0.6, 184 + seed * 38);
   }
@@ -101,7 +101,6 @@ export function pinwheelFrame({ time, radius, density }: FrameContext): OrbFrame
       addDot(frame, point, 0.38 + (1 - progress) * 1.45, 0.16 + progress * 0.58, 278 + blade * 14);
     }
   }
-  addDot(frame, { x: center, y: center, z: 1 }, 3.2 + Math.sin(time * 5) * 0.7, 0.94, 38);
   return frame;
 }
 
@@ -109,7 +108,7 @@ export function pinwheelFrame({ time, radius, density }: FrameContext): OrbFrame
 export function plasmaFrame(context: FrameContext): OrbFrame {
   const { time, density } = context;
   const frame = createFrame();
-  const project = createProjector(context, time * 0.18, 0.37);
+  const project = createProjector(context, time * 0.13, 0.37);
   const threads = Math.round(11 * density);
   const samples = Math.round(28 * density);
   for (let thread = 0; thread < threads; thread += 1) {
@@ -118,13 +117,13 @@ export function plasmaFrame(context: FrameContext): OrbFrame {
     for (let sample = 0; sample < samples; sample += 1) {
       const progress = sample / Math.max(1, samples - 1);
       const angle = progress * TAU + phase;
-      const jitter = Math.sin(time * 5.1 + sample * 3.7 + phase) * 0.11;
+      const jitter = Math.sin(time * 3.5 + sample * 3.7 + phase) * 0.11;
       const point = project(
         Math.cos(angle) * (0.55 + jitter),
-        (progress - 0.5) * 1.55 + Math.sin(time * 2 + phase) * 0.12,
+        (progress - 0.5) * 1.55 + Math.sin(time * 1.4 + phase) * 0.12,
         Math.sin(angle) * (0.55 + jitter),
       );
-      const pulse = Math.max(0, 1 - Math.abs(((time * 1.8 + thread * 0.17) % 1) - progress) * 7);
+      const pulse = Math.max(0, 1 - Math.abs(((time * 1.25 + thread * 0.17) % 1) - progress) * 7);
       addDot(
         frame,
         point,
@@ -306,7 +305,6 @@ export function resonanceFrame({ time, radius, density }: FrameContext): OrbFram
       addDot(frame, point, 0.34 + (1 - phase) * 1.65, Math.pow(1 - phase, 1.6) * 0.72, 275 + ring * 8);
     }
   }
-  addDot(frame, { x: center, y: center, z: 1 }, 2.1 + Math.sin(time * 4.2) * 0.7, 0.92, 292);
   return frame;
 }
 

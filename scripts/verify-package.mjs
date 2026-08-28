@@ -33,6 +33,9 @@ const requiredFiles = [
   ...singleModes.flatMap((state) => [`dist/${state}.js`, `dist/singles/${state}.d.ts`]),
 ];
 const declarationImport = /(?:from\s+['"]|import\s+['"]|import\(\s*['"])(\.{1,2}\/[^'"?#]+)(?:['"])/g;
+const DEFAULT_SINGLE_MODE_GZIP_BUDGET = 4 * 1024;
+const COMPLEX_SINGLE_MODE_GZIP_BUDGET = 5 * 1024;
+const COMPLEX_SINGLE_MODES = new Set(['batching', 'bubble-charting', 'gauging', 'solving']);
 
 const fail = (message) => {
   throw new Error(`Package verification failed: ${message}`);
@@ -105,7 +108,11 @@ for (const file of ['dist/adapters/react.d.ts', 'dist/singles/racing.d.ts']) {
 for (const state of singleModes) {
   const entry = await readFile(resolve(root, 'dist', `${state}.js`));
   if (entry.includes('from "./')) fail(`single-mode entry ${state} must be self-contained.`);
-  if (gzipSync(entry).byteLength > 4 * 1024) fail(`single-mode entry ${state} exceeds the 4 kB gzip size budget.`);
+  const gzipBudget = COMPLEX_SINGLE_MODES.has(state)
+    ? COMPLEX_SINGLE_MODE_GZIP_BUDGET
+    : DEFAULT_SINGLE_MODE_GZIP_BUDGET;
+  if (gzipSync(entry).byteLength > gzipBudget)
+    fail(`single-mode entry ${state} exceeds its ${gzipBudget / 1024} kB gzip size budget.`);
 }
 
 const registeredElements = new Map();

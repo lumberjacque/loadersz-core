@@ -91,7 +91,12 @@ export class CanvasLoader {
     const size = Math.max(16, this.options.size);
     this.context.clearRect(0, 0, size, size);
     const frame = this.frameBuilder(
-      { time: this.currentTime(performance.now()), radius: size * 0.41, density: clamp(this.options.density, 0.35, 2) },
+      {
+        time: this.currentTime(performance.now()),
+        radius: size * 0.41,
+        density: clamp(this.options.density, 0.35, 2),
+        particleRadius: clamp(this.options.particleRadius, 0.5, 2.5),
+      },
       this.options,
     );
     paintFrame(

@@ -1,13 +1,13 @@
 import { createFixedModeElement, createFixedModeLoader } from '../core/FixedLoader';
-import { cubeFrame } from '../core/modes/foundational';
+import { comparisonFrame } from '../core/modes';
 
 export type { LoaderszSingleModeOptions } from '../core/FixedLoader';
 
 /** The fixed state registered by this entry point. */
-export const state = 'solving' as const;
-/** Imperative controller permanently bound to the solving animation. */
-export const LoaderszLoader = createFixedModeLoader(state, cubeFrame);
-/** Native element constructor permanently bound to the solving animation. */
+export const state = 'comparing' as const;
+/** Imperative controller permanently bound to the comparing animation. */
+export const LoaderszLoader = createFixedModeLoader(state, comparisonFrame);
+/** Native element constructor permanently bound to the comparing animation. */
 export const LoaderszLoaderElement = createFixedModeElement(LoaderszLoader);
 
 if (!customElements.get('loadersz-loader')) customElements.define('loadersz-loader', LoaderszLoaderElement);
