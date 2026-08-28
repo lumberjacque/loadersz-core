@@ -224,7 +224,6 @@ export function signalFrame({ time, radius, density }: FrameContext): OrbFrame {
       );
     }
   }
-  addDot(frame, { x: center, y: center + radius * 0.28, z: 0.9 }, 1.24, 0.92, 322);
   return frame;
 }
 
@@ -410,15 +409,17 @@ export function orbitdotsFrame({ time, radius, density }: FrameContext): OrbFram
         tone,
       );
     }
-    const angle = time * 1.16 + offset;
-    addDot(
-      frame,
-      { x: center + Math.cos(angle) * radius * wide, y: center + Math.sin(angle) * radius * tall, z: 0.9 },
-      1.1,
-      0.94,
-      tone,
-    );
+    const movers = Math.max(1, Math.round(density * 1.5));
+    for (let mover = 0; mover < movers; mover += 1) {
+      const angle = time * 1.16 + offset + (mover / movers) * TAU;
+      addDot(
+        frame,
+        { x: center + Math.cos(angle) * radius * wide, y: center + Math.sin(angle) * radius * tall, z: 0.9 },
+        1.1,
+        0.94,
+        tone,
+      );
+    }
   });
-  addDot(frame, { x: center, y: center, z: 0.2 }, 0.66, 0.52, 198);
   return frame;
 }
