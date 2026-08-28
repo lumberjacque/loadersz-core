@@ -130,6 +130,36 @@ export const STATE_TO_MODE: Record<LoaderStateName, OrbMode> = {
   polling: 'poll',
   correlating: 'correlation',
   routing: 'flowmap',
+  'bar-charting': 'barchart',
+  comparing: 'comparison',
+  accumulating: 'stacked',
+  sequencing: 'timeline',
+  transmitting: 'throughput',
+  summarizing: 'donut',
+  gauging: 'gauge',
+  funneling: 'funnel',
+  treemapping: 'treemap',
+  areamapping: 'area',
+  downloading: 'download',
+  retrying: 'retry',
+  scanning: 'scanner',
+  compiling: 'compile',
+  paginating: 'pagination',
+  reconnecting: 'reconnect',
+  sankeying: 'sankey',
+  radaring: 'radarplot',
+  scheduling: 'gantt',
+  calendarizing: 'calendar',
+  bulletting: 'bullet',
+  boxing: 'boxplot',
+  dispatching: 'dispatch',
+  batching: 'batch',
+  checkpointing: 'checkpoint',
+  prioritizing: 'priority',
+  verifying: 'verify',
+  pendulating: 'pendulum',
+  drifting: 'drift',
+  raining: 'rain',
 };
 
 /** Ordered semantic state names used by consumers that need to enumerate the full library. */
@@ -155,6 +185,12 @@ const loaderStates = [
   'placeholder',
   'waiting',
   'pulsing',
+  'downloading',
+  'retrying',
+  'scanning',
+  'compiling',
+  'paginating',
+  'reconnecting',
 ] as const satisfies readonly LoaderStateName[];
 
 const reasoningStates = [
@@ -176,6 +212,8 @@ const reasoningStates = [
   'linking',
   'resolving',
   'imagining',
+  'prioritizing',
+  'verifying',
 ] as const satisfies readonly LoaderStateName[];
 
 const systemStates = [
@@ -186,6 +224,9 @@ const systemStates = [
   'wiring',
   'marqueeing',
   'orbiting-dots',
+  'dispatching',
+  'batching',
+  'checkpointing',
 ] as const satisfies readonly LoaderStateName[];
 
 const dataStates = [
@@ -214,6 +255,22 @@ const dataStates = [
   'polling',
   'correlating',
   'routing',
+  'bar-charting',
+  'comparing',
+  'accumulating',
+  'sequencing',
+  'transmitting',
+  'summarizing',
+  'gauging',
+  'funneling',
+  'treemapping',
+  'areamapping',
+  'sankeying',
+  'radaring',
+  'scheduling',
+  'calendarizing',
+  'bulletting',
+  'boxing',
 ] as const satisfies readonly LoaderStateName[];
 
 const atmosphereStates = [
@@ -227,6 +284,7 @@ const atmosphereStates = [
   'vibrating',
   'illuminating',
   'sparkling',
+  'raining',
 ] as const satisfies readonly LoaderStateName[];
 
 const categorizedStates = new Set<LoaderStateName>([
@@ -241,7 +299,7 @@ const categorizedStates = new Set<LoaderStateName>([
 export const LOADER_CATEGORIES = Object.freeze([
   Object.freeze({ id: 'loaders' as const, label: 'Loaders', states: Object.freeze([...loaderStates]) }),
   Object.freeze({ id: 'systems' as const, label: 'Systems', states: Object.freeze([...systemStates]) }),
-  Object.freeze({ id: 'data' as const, label: 'Data & telemetry', states: Object.freeze([...dataStates]) }),
+  Object.freeze({ id: 'data' as const, label: 'Data visualizations', states: Object.freeze([...dataStates]) }),
   Object.freeze({ id: 'reasoning' as const, label: 'Reasoning', states: Object.freeze([...reasoningStates]) }),
   Object.freeze({ id: 'atmosphere' as const, label: 'Atmosphere', states: Object.freeze([...atmosphereStates]) }),
   Object.freeze({

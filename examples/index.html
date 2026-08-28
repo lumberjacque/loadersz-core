@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loadersz — local gallery</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        background: #0b0c0f;
+        color: #f4f2ef;
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        min-width: 320px;
+        margin: 0;
+        background:
+          radial-gradient(
+            ellipse 80% 42rem at 50% -8rem,
+            #271613 0%,
+            transparent 65%
+          ),
+          #0b0c0f;
+      }
+      main {
+        width: min(1240px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 56px 0 96px;
+      }
+      header {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 28px;
+        padding-bottom: 36px;
+        border-bottom: 1px solid #292a2f;
+      }
+      .eyebrow {
+        display: block;
+        margin-bottom: 14px;
+        color: #ff7950;
+        font:
+          700 11px/1 ui-monospace,
+          SFMono-Regular,
+          monospace;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+      }
+      h1 {
+        max-width: 740px;
+        margin: 0;
+        font-size: clamp(2.5rem, 7vw, 6.5rem);
+        font-weight: 700;
+        letter-spacing: -0.075em;
+        line-height: 0.87;
+      }
+      p {
+        max-width: 540px;
+        margin: 20px 0 0;
+        color: #9b9ca4;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+      .count {
+        flex: 0 0 auto;
+        padding: 10px 12px;
+        border: 1px solid #5b2a20;
+        border-radius: 999px;
+        color: #ff9c7d;
+        background: #251411;
+        font:
+          700 12px/1 ui-monospace,
+          SFMono-Regular,
+          monospace;
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 24px 0;
+      }
+      .search {
+        width: min(320px, 100%);
+        padding: 11px 13px;
+        border: 1px solid #303138;
+        border-radius: 9px;
+        outline: none;
+        background: #15161a;
+        color: #f7f4f0;
+        font: 14px/1.2 inherit;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .search:focus {
+        border-color: #ed633e;
+        box-shadow: 0 0 0 3px #ed633e24;
+      }
+      .legend {
+        color: #787982;
+        font:
+          12px/1.4 ui-monospace,
+          SFMono-Regular,
+          monospace;
+      }
+      .inspector {
+        display: grid;
+        grid-template-columns: minmax(180px, 0.65fr) minmax(0, 1fr);
+        gap: 1px;
+        overflow: hidden;
+        border: 1px solid #34353c;
+        border-radius: 15px;
+        background: #34353c;
+      }
+      .selected-preview {
+        display: grid;
+        place-items: center;
+        min-height: 238px;
+        padding: 24px;
+        background:
+          white;
+      }
+      .selected-preview loadersz-loader {
+        transform: scale(1.04);
+      }
+      .control-panel {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+        align-content: center;
+        padding: 26px;
+        background: #15161a;
+      }
+      .control-title {
+        grid-column: 1 / -1;
+        margin: 0 0 -8px;
+        color: #f8f4f0;
+        font:
+          700 16px/1 ui-monospace,
+          SFMono-Regular,
+          monospace;
+      }
+      label {
+        display: grid;
+        gap: 9px;
+        color: #9b9ca4;
+        font:
+          11px/1 ui-monospace,
+          SFMono-Regular,
+          monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      label output {
+        color: #ef8a6c;
+        text-align: right;
+      }
+      .label-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      input[type="range"] {
+        width: 100%;
+        accent-color: #f1633d;
+      }
+      select,
+      input[type="color"] {
+        width: 100%;
+        min-height: 32px;
+        border: 1px solid #35363d;
+        border-radius: 7px;
+        background: #1d1e23;
+        color: #f4f2ef;
+      }
+      input[type="color"] {
+        padding: 3px;
+      }
+      .section {
+        padding: 34px 0 0;
+      }
+      .section[hidden] {
+        display: none;
+      }
+      h2 {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin: 0 0 14px;
+        font-size: 15px;
+        letter-spacing: -0.02em;
+      }
+      h2 span {
+        color: #777881;
+        font:
+          11px/1 ui-monospace,
+          SFMono-Regular,
+          monospace;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+        gap: 1px;
+        overflow: hidden;
+        border: 1px solid #292a2f;
+        border-radius: 14px;
+        background: #292a2f;
+      }
+      article {
+        display: grid;
+        grid-template-rows: 1fr auto;
+        min-height: 184px;
+        padding: 13px;
+        border: 0;
+        background: #111216;
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      article:hover {
+        background: #191a1f;
+      }
+      article.is-selected {
+        position: relative;
+        z-index: 1;
+        background: #251613;
+        box-shadow: inset 0 0 0 1px #f1633d;
+      }
+      .visual {
+        display: grid;
+        place-items: center;
+        min-height: 122px;
+      }
+      loadersz-loader {
+        display: block;
+        transition: transform 0.26s cubic-bezier(0.2, 0.85, 0.2, 1);
+      }
+      article:hover loadersz-loader {
+        transform: scale(1.16);
+      }
+      code {
+        display: block;
+        overflow: hidden;
+        color: #d4d3d1;
+        font:
+          11px/1.2 ui-monospace,
+          SFMono-Regular,
+          monospace;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .empty {
+        display: none;
+        padding: 56px 0;
+        color: #9899a0;
+        text-align: center;
+      }
+      .empty.is-visible {
+        display: block;
+      }
+      @media (max-width: 700px) {
+        .inspector {
+          grid-template-columns: 1fr;
+        }
+        .control-panel {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 600px) {
+        main {
+          width: min(100% - 28px, 1240px);
+          padding-top: 34px;
+        }
+        header {
+          align-items: start;
+          flex-direction: column;
+        }
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        article {
+          min-height: 160px;
+        }
+        .visual {
+          min-height: 105px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <span class="eyebrow">Local Vite preview</span>
+          <h1>Every state, in one place.</h1>
+          <p>
+            A direct rendering of the local registry. Nothing here is deployed
+            or part of the public site.
+          </p>
+        </div>
+        <strong class="count" id="count">Loading…</strong>
+      </header>
+      <div class="toolbar">
+        <input
+          class="search"
+          id="search"
+          type="search"
+          placeholder="Search states"
+          autocomplete="off"
+        /><span class="legend">Click a tile to open it in the playground · use arrow keys to browse</span>
+      </div>
+      <section class="inspector" aria-label="Selected loader playground">
+        <div class="selected-preview">
+          <loadersz-loader
+            id="selected-loader"
+            state="working"
+            size="400"
+            density="1"
+            theme="dark"
+          ></loadersz-loader>
+        </div>
+        <div class="control-panel">
+          <h2 class="control-title" id="selected-name">working</h2>
+          <label
+            ><span class="label-line"
+              >Size <output id="size-output">400</output></span
+            ><input id="size" type="range" min="48" max="400" value="400"
+          /></label>
+          <label
+            ><span class="label-line"
+              >Speed <output id="speed-output">1×</output></span
+            ><input
+              id="speed"
+              type="range"
+              min="0"
+              max="2.5"
+              step="0.1"
+              value="1"
+          /></label>
+          <label
+            ><span class="label-line"
+              >Density <output id="density-output">1×</output></span
+            ><input
+              id="density"
+              type="range"
+              min="0.35"
+              max="2"
+              step="0.05"
+              value="1"
+          /></label>
+          <label
+            ><span class="label-line"
+              >Particle radius <output id="radius-output">1×</output></span
+            ><input
+              id="radius"
+              type="range"
+              min="0.5"
+              max="2.5"
+              step="0.1"
+              value="1"
+          /></label>
+          <label
+            >Theme<select id="theme">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="auto">Auto</option>
+            </select></label
+          >
+          <label
+            >Color mode<select id="color-mode">
+              <option value="native">Native</option>
+              <option value="hue">Hue</option>
+              <option value="css">CSS color</option>
+            </select></label
+          >
+          <label id="hue-control" hidden
+            ><span class="label-line"
+              >Hue <output id="hue-output">18°</output></span
+            ><input id="hue" type="range" min="0" max="360" value="18"
+          /></label>
+          <label id="css-color-control" hidden
+            >CSS color<input id="color" type="color" value="#f1633d"
+          /></label>
+        </div>
+      </section>
+      <div id="gallery"></div>
+      <p class="empty" id="empty">No states match that search.</p>
+    </main>
+    <script type="module">
+      import "../src/loadersz.ts";
+      import { LOADER_CATEGORIES, LOADER_STATES } from "../src/states.ts";
+
+      await customElements.whenDefined("loadersz-loader");
+      const gallery = document.querySelector("#gallery");
+      const search = document.querySelector("#search");
+      const empty = document.querySelector("#empty");
+      const selectedLoader = document.querySelector("#selected-loader");
+      const selectedName = document.querySelector("#selected-name");
+      const controls = {
+        size: document.querySelector("#size"),
+        speed: document.querySelector("#speed"),
+        density: document.querySelector("#density"),
+        radius: document.querySelector("#radius"),
+        theme: document.querySelector("#theme"),
+        colorMode: document.querySelector("#color-mode"),
+        hue: document.querySelector("#hue"),
+        color: document.querySelector("#color"),
+      };
+      const outputs = {
+        size: document.querySelector("#size-output"),
+        speed: document.querySelector("#speed-output"),
+        density: document.querySelector("#density-output"),
+        radius: document.querySelector("#radius-output"),
+        hue: document.querySelector("#hue-output"),
+      };
+      const hueControl = document.querySelector("#hue-control");
+      const cssColorControl = document.querySelector("#css-color-control");
+      document.querySelector("#count").textContent =
+        `${LOADER_STATES.length} states`;
+
+      const selectCard = (card) => {
+        const state = card.dataset.state;
+        if (!state) return;
+        document
+          .querySelectorAll("article.is-selected")
+          .forEach((item) => item.classList.remove("is-selected"));
+        card.classList.add("is-selected");
+        selectedLoader.setAttribute("state", state);
+        selectedName.textContent = state;
+      };
+
+      const isTypingTarget = (target) =>
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLSelectElement ||
+        target instanceof HTMLTextAreaElement ||
+        target?.isContentEditable;
+
+      document.addEventListener("keydown", (event) => {
+        if (
+          ![
+            "ArrowLeft",
+            "ArrowRight",
+            "ArrowUp",
+            "ArrowDown",
+          ].includes(event.key) ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey ||
+          isTypingTarget(event.target)
+        )
+          return;
+
+        const visibleCards = [
+          ...document.querySelectorAll("article[data-state]:not([hidden])"),
+        ];
+        const selectedIndex = visibleCards.findIndex((card) =>
+          card.classList.contains("is-selected"),
+        );
+        if (!visibleCards.length || selectedIndex === -1) return;
+
+        event.preventDefault();
+        const direction =
+          event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
+        const nextIndex =
+          (selectedIndex + direction + visibleCards.length) % visibleCards.length;
+        selectCard(visibleCards[nextIndex]);
+      });
+
+      const sections = LOADER_CATEGORIES.map((category) => {
+        const section = document.createElement("section");
+        section.className = "section";
+        section.dataset.category = category.id;
+        section.innerHTML = `<h2>${category.label} <span>${category.states.length}</span></h2><div class="grid"></div>`;
+        const grid = section.querySelector(".grid");
+        category.states.forEach((state) => {
+          const card = document.createElement("article");
+          card.dataset.state = state;
+          card.tabIndex = 0;
+          card.setAttribute("role", "button");
+          card.setAttribute("aria-label", `Select ${state}`);
+          card.innerHTML = `<div class="visual"><loadersz-loader state="${state}" size="82" density="0.9" theme="dark"></loadersz-loader></div><code>${state}</code>`;
+          card.addEventListener("click", () => selectCard(card));
+          card.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              selectCard(card);
+            }
+          });
+          if (state === "working") selectCard(card);
+          grid.append(card);
+        });
+        gallery.append(section);
+        return section;
+      });
+
+      search.addEventListener("input", () => {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+        sections.forEach((section) => {
+          let sectionVisible = 0;
+          section.querySelectorAll("article").forEach((card) => {
+            const matches = card.dataset.state.includes(query);
+            card.hidden = !matches;
+            if (matches) {
+              sectionVisible += 1;
+              visible += 1;
+            }
+          });
+          section.hidden = sectionVisible === 0;
+        });
+        empty.classList.toggle("is-visible", visible === 0);
+      });
+
+      const update = () => {
+        selectedLoader.setAttribute("size", controls.size.value);
+        selectedLoader.setAttribute("speed", controls.speed.value);
+        selectedLoader.setAttribute("density", controls.density.value);
+        selectedLoader.setAttribute("particle-radius", controls.radius.value);
+        selectedLoader.setAttribute("theme", controls.theme.value);
+        const colorMode = controls.colorMode.value;
+        hueControl.hidden = colorMode !== "hue";
+        cssColorControl.hidden = colorMode !== "css";
+        if (colorMode === "native") {
+          selectedLoader.setAttribute("hue", "-1");
+          selectedLoader.removeAttribute("color");
+        } else if (colorMode === "hue") {
+          selectedLoader.setAttribute("hue", controls.hue.value);
+          selectedLoader.removeAttribute("color");
+        } else {
+          selectedLoader.setAttribute("hue", "-1");
+          selectedLoader.setAttribute("color", controls.color.value);
+        }
+        outputs.size.textContent = controls.size.value;
+        outputs.speed.textContent = `${controls.speed.value}×`;
+        outputs.density.textContent = `${controls.density.value}×`;
+        outputs.radius.textContent = `${controls.radius.value}×`;
+        outputs.hue.textContent = `${controls.hue.value}°`;
+      };
+      Object.values(controls).forEach((control) =>
+        control.addEventListener("input", update),
+      );
+      update();
+    </script>
+  </body>
+</html>

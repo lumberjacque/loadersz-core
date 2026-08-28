@@ -6,7 +6,7 @@ import type { OrbFrame, ProjectedPoint } from './types';
  * @returns A fresh mutable frame with no dots or lines.
  */
 export function createFrame(): OrbFrame {
-  return { dots: [], lines: [] };
+  return { dots: [], lines: [], rects: [], arcs: [] };
 }
 
 /**
@@ -41,6 +41,44 @@ export function addLine(
   tone?: number,
 ): void {
   if (alpha > 0.015) frame.lines.push({ from, to, alpha, width, tone });
+}
+
+/**
+ * Adds a filled rectangular mark to a frame.
+ *
+ * @param frame Destination geometry.
+ * @param rect Rectangle position, dimensions and depth.
+ * @param alpha Opacity; values at or below `0.015` are ignored.
+ * @param tone Optional HSL hue.
+ */
+export function addRect(
+  frame: OrbFrame,
+  rect: { x: number; y: number; width: number; height: number; z?: number },
+  alpha = 1,
+  tone?: number,
+): void {
+  if (alpha > 0.015 && rect.width > 0 && rect.height > 0) {
+    frame.rects.push({ ...rect, z: rect.z ?? 0, alpha, tone });
+  }
+}
+
+/**
+ * Adds a stroked circular arc to a frame.
+ *
+ * @param frame Destination geometry.
+ * @param arc Arc centre, radius, angles, width and depth.
+ * @param alpha Opacity; values at or below `0.015` are ignored.
+ * @param tone Optional HSL hue.
+ */
+export function addArc(
+  frame: OrbFrame,
+  arc: { x: number; y: number; radius: number; startAngle: number; endAngle: number; width: number; z?: number },
+  alpha = 1,
+  tone?: number,
+): void {
+  if (alpha > 0.015 && arc.radius > 0 && arc.width > 0) {
+    frame.arcs.push({ ...arc, z: arc.z ?? 0, alpha, tone });
+  }
 }
 
 /**

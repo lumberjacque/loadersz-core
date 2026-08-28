@@ -7,6 +7,9 @@ import * as classicLoaders from './classic-loaders';
 import * as utilityLoaders from './utility-loaders';
 import * as dataLoaders from './data-loaders';
 import * as dataStudies from './data-studies';
+import * as dataBars from './data-bars';
+import * as dataCharts from './data-charts';
+import * as expansion from './expansion';
 
 const BUILDERS = {
   ...foundational,
@@ -17,6 +20,9 @@ const BUILDERS = {
   ...utilityLoaders,
   ...dataLoaders,
   ...dataStudies,
+  ...dataBars,
+  ...dataCharts,
+  ...expansion,
 };
 type FrameBuilder = (context: FrameContext) => OrbFrame;
 
@@ -142,6 +148,36 @@ export const FRAME_BUILDERS: Record<OrbMode, FrameBuilder> = {
   poll: BUILDERS.pollingFrame,
   correlation: BUILDERS.correlationFrame,
   flowmap: BUILDERS.flowmapFrame,
+  barchart: BUILDERS.barChartFrame,
+  comparison: BUILDERS.comparisonFrame,
+  stacked: BUILDERS.stackedFrame,
+  timeline: BUILDERS.timelineFrame,
+  throughput: BUILDERS.throughputFrame,
+  donut: BUILDERS.donutFrame,
+  gauge: BUILDERS.gaugeFrame,
+  funnel: BUILDERS.funnelFrame,
+  treemap: BUILDERS.treemapFrame,
+  area: BUILDERS.areaFrame,
+  download: BUILDERS.downloadFrame,
+  retry: BUILDERS.retryFrame,
+  scanner: BUILDERS.scannerFrame,
+  compile: BUILDERS.compileFrame,
+  pagination: BUILDERS.paginationFrame,
+  reconnect: BUILDERS.reconnectFrame,
+  sankey: BUILDERS.sankeyFrame,
+  radarplot: BUILDERS.radarPlotFrame,
+  gantt: BUILDERS.ganttFrame,
+  calendar: BUILDERS.calendarFrame,
+  bullet: BUILDERS.bulletFrame,
+  boxplot: BUILDERS.boxPlotFrame,
+  dispatch: BUILDERS.dispatchFrame,
+  batch: BUILDERS.batchFrame,
+  checkpoint: BUILDERS.checkpointFrame,
+  priority: BUILDERS.priorityFrame,
+  verify: BUILDERS.verifyFrame,
+  pendulum: BUILDERS.pendulumFrame,
+  drift: BUILDERS.driftFrame,
+  rain: BUILDERS.rainFrame,
 };
 
 /**
