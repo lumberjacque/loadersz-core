@@ -119,7 +119,37 @@ export type OrbMode =
   | 'telemetryreadout'
   | 'poll'
   | 'correlation'
-  | 'flowmap';
+  | 'flowmap'
+  | 'barchart'
+  | 'comparison'
+  | 'stacked'
+  | 'timeline'
+  | 'throughput'
+  | 'donut'
+  | 'gauge'
+  | 'funnel'
+  | 'treemap'
+  | 'area'
+  | 'download'
+  | 'retry'
+  | 'scanner'
+  | 'compile'
+  | 'pagination'
+  | 'reconnect'
+  | 'sankey'
+  | 'radarplot'
+  | 'gantt'
+  | 'calendar'
+  | 'bullet'
+  | 'boxplot'
+  | 'dispatch'
+  | 'batch'
+  | 'checkpoint'
+  | 'priority'
+  | 'verify'
+  | 'pendulum'
+  | 'drift'
+  | 'rain';
 
 /** Semantic states that map to a visual geometry without coupling callers to an implementation detail. */
 export type OrbState =
@@ -243,6 +273,36 @@ export type OrbState =
   | 'polling'
   | 'correlating'
   | 'routing'
+  | 'bar-charting'
+  | 'comparing'
+  | 'accumulating'
+  | 'sequencing'
+  | 'transmitting'
+  | 'summarizing'
+  | 'gauging'
+  | 'funneling'
+  | 'treemapping'
+  | 'areamapping'
+  | 'downloading'
+  | 'retrying'
+  | 'scanning'
+  | 'compiling'
+  | 'paginating'
+  | 'reconnecting'
+  | 'sankeying'
+  | 'radaring'
+  | 'scheduling'
+  | 'calendarizing'
+  | 'bulletting'
+  | 'boxing'
+  | 'dispatching'
+  | 'batching'
+  | 'checkpointing'
+  | 'prioritizing'
+  | 'verifying'
+  | 'pendulating'
+  | 'drifting'
+  | 'raining'
   | OrbMode;
 
 /** Canvas colour scheme. `auto` follows the browser's `prefers-color-scheme` media query. */
@@ -271,7 +331,7 @@ export interface LoaderszOrbOptions {
   ariaLabel?: string;
   /** Geometry detail multiplier. The renderer clamps it to `0.35`–`2`; default is `1`. */
   density?: number;
-  /** Multiplies every rendered particle radius. Values are clamped to `0.5`–`2.5`; default is `1`. */
+  /** Multiplies dot and arc widths and controls rectangle corner rounding. Values are clamped to `0.5`–`2.5`; default is `1`. */
   particleRadius?: number;
   /** -1 keeps a mode's native/monochrome look; 0–360 forces one hue. */
   hue?: number;
@@ -302,10 +362,48 @@ export interface OrbLine {
   tone?: number;
 }
 
+/** A filled rectangular mark, used by chart and interface-like visual states. */
+export interface OrbRect extends ProjectedPoint {
+  /** Left edge in canvas CSS pixels. */
+  x: number;
+  /** Top edge in canvas CSS pixels. */
+  y: number;
+  /** Rectangle width in canvas CSS pixels. */
+  width: number;
+  /** Rectangle height in canvas CSS pixels. */
+  height: number;
+  /** Opacity of the filled rectangle. */
+  alpha: number;
+  /** Optional HSL hue used by colourful modes. */
+  tone?: number;
+}
+
+/** A stroked circular arc, used by gauges and segmented circular charts. */
+export interface OrbArc extends ProjectedPoint {
+  /** Arc centre in canvas CSS pixels. */
+  x: number;
+  /** Arc centre in canvas CSS pixels. */
+  y: number;
+  /** Arc radius in canvas CSS pixels. */
+  radius: number;
+  /** Start angle in radians. */
+  startAngle: number;
+  /** End angle in radians. */
+  endAngle: number;
+  /** Stroke width in canvas CSS pixels. */
+  width: number;
+  /** Arc opacity. */
+  alpha: number;
+  /** Optional HSL hue used by colourful modes. */
+  tone?: number;
+}
+
 /** Complete geometry for one canvas frame. Builders create this; the renderer paints it. */
 export interface OrbFrame {
   dots: Dot[];
   lines: OrbLine[];
+  rects: OrbRect[];
+  arcs: OrbArc[];
 }
 
 /** Values supplied to each pure frame builder. `time` is measured in seconds. */
@@ -313,6 +411,8 @@ export interface FrameContext {
   time: number;
   radius: number;
   density: number;
+  /** Shape-thickness multiplier supplied by the canvas controller; defaults to `1` for custom renderers. */
+  particleRadius?: number;
 }
 
 export type Vector3 = [number, number, number];
