@@ -145,7 +145,7 @@ export const STATE_TO_MODE: Record<LoaderStateName, OrbMode> = {
   scanning: 'scanner',
   compiling: 'compile',
   paginating: 'pagination',
-  reconnecting: 'reconnect',
+  'bubble-charting': 'bubblechart',
   sankeying: 'sankey',
   radaring: 'radarplot',
   scheduling: 'gantt',
@@ -190,7 +190,6 @@ const loaderStates = [
   'scanning',
   'compiling',
   'paginating',
-  'reconnecting',
 ] as const satisfies readonly LoaderStateName[];
 
 const reasoningStates = [
@@ -264,6 +263,7 @@ const dataStates = [
   'gauging',
   'funneling',
   'treemapping',
+  'bubble-charting',
   'areamapping',
   'sankeying',
   'radaring',

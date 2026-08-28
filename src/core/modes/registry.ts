@@ -163,7 +163,7 @@ export const FRAME_BUILDERS: Record<OrbMode, FrameBuilder> = {
   scanner: BUILDERS.scannerFrame,
   compile: BUILDERS.compileFrame,
   pagination: BUILDERS.paginationFrame,
-  reconnect: BUILDERS.reconnectFrame,
+  bubblechart: BUILDERS.bubbleChartFrame,
   sankey: BUILDERS.sankeyFrame,
   radarplot: BUILDERS.radarPlotFrame,
   gantt: BUILDERS.ganttFrame,

@@ -161,7 +161,7 @@
     "./dist/scanning.js",
     "./dist/compiling.js",
     "./dist/paginating.js",
-    "./dist/reconnecting.js",
+    "./dist/bubble-charting.js",
     "./dist/sankeying.js",
     "./dist/radaring.js",
     "./dist/scheduling.js",

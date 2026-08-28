@@ -1,32 +1,9 @@
 import type { FrameContext, OrbFrame, ProjectedPoint } from './shared';
-import { addArc, addDot, addLine, addPolygon, addRect, createFrame, TAU } from './shared';
+import { addArc, addDot, addLine, addRect, createFrame, TAU } from './shared';
 import { densityCount, safeThickness } from './shape-metrics';
 
 const center = (radius: number) => radius / 0.82;
 const pulse = (time: number, seed = 0, speed = 1) => (Math.sin(time * speed + seed) + 1) / 2;
-
-function addDiamond(
-  frame: OrbFrame,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  z: number,
-  alpha: number,
-  tone: number,
-): void {
-  addPolygon(
-    frame,
-    [
-      { x, y: y - height / 2, z },
-      { x: x + width / 2, y, z },
-      { x, y: y + height / 2, z },
-      { x: x - width / 2, y, z },
-    ],
-    alpha,
-    tone,
-  );
-}
 
 function addWorkflowCard(
   frame: OrbFrame,
@@ -257,65 +234,6 @@ export function paginationFrame({ time, radius, density, particleRadius }: Frame
       0.22 + hot * 0.72,
       30,
     );
-  }
-  return frame;
-}
-
-/** Draws a reconnecting relay: angular fragments converge into a live link between two hex terminals. */
-export function reconnectFrame({ time, radius, density, particleRadius }: FrameContext): OrbFrame {
-  const frame = createFrame();
-  const c = center(radius);
-  const fragments = densityCount({ time, radius, density }, { base: 9, minimum: 6, maximum: 16 });
-  const rawConnection = pulse(time, 0.15, 0.42);
-  const connection = rawConnection * rawConnection * (3 - 2 * rawConnection);
-  const terminalSize = radius * 0.2;
-  const pieceWidth = safeThickness(
-    { time, radius, density, particleRadius },
-    radius * 0.11,
-    (radius * 1.15) / fragments,
-    radius * 0.018,
-  );
-  const left = { x: c - radius * 0.7, y: c, z: 0.4 };
-  const right = { x: c + radius * 0.7, y: c, z: 0.4 };
-  for (const [terminal, tone] of [[left, 196], [right, 28]] as const) {
-    const points = Array.from({ length: 6 }, (_, index) => {
-      const angle = -Math.PI / 2 + (index * TAU) / 6;
-      return { x: terminal.x + Math.cos(angle) * terminalSize, y: terminal.y + Math.sin(angle) * terminalSize, z: terminal.z };
-    });
-    addPolygon(frame, points, 0.32, 214);
-    for (let contact = 0; contact < 3; contact += 1) {
-      const y = terminal.y + (contact - 1) * terminalSize * 0.48;
-      const direction = terminal === left ? 1 : -1;
-      addDiamond(frame, terminal.x + direction * terminalSize * 0.36, y, terminalSize * 0.25, terminalSize * 0.19, 0.75, 0.72, tone);
-    }
-  }
-  for (let fragment = 0; fragment < fragments; fragment += 1) {
-    const progress = (fragment + 1) / (fragments + 1);
-    const targetX = c + (progress - 0.5) * radius * 1.05;
-    const targetY = c - Math.sin(progress * Math.PI) * radius * 0.18;
-    const source = fragment % 2 ? left : right;
-    const arrival = Math.max(0, Math.min(1, connection * 1.5 - (fragment / fragments) * 0.5));
-    const drift = (1 - arrival) * radius * 0.27;
-    const x = source.x + (targetX - source.x) * arrival;
-    const y = source.y + (targetY - source.y) * arrival + Math.sin(time * 1.8 + fragment * 1.9) * drift;
-    const tone = fragment % 2 ? 196 : 28;
-    addLine(frame, source, { x, y, z: arrival }, 0.08 + (1 - arrival) * 0.2, 0.72, 214);
-    addDiamond(frame, x, y, pieceWidth, pieceWidth * 0.72, arrival, 0.14 + arrival * 0.8, tone);
-  }
-  if (connection > 0.5) {
-    for (let packet = 0; packet < 3; packet += 1) {
-      const p = (time * 0.55 + packet / 3) % 1;
-      addDiamond(
-        frame,
-        left.x + (right.x - left.x) * p,
-        c - Math.sin(p * Math.PI) * radius * 0.18,
-        pieceWidth * 0.62,
-        pieceWidth * 0.4,
-        1,
-        (connection - 0.46) * 1.7,
-        48,
-      );
-    }
   }
   return frame;
 }
