@@ -19,7 +19,7 @@ export default defineConfig({
       formats: ['es'],
       fileName: (_format, entryName) => `${entryName}.js`,
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ['@angular/core', 'react', 'vue', 'svelte', 'svelte/elements'],
     },
   },

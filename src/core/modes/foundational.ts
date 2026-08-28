@@ -347,7 +347,7 @@ export function tunnelFrame({ time, radius, density }: FrameContext): OrbFrame {
   for (let track = 0; track < tracks; track += 1) {
     const heading = (track / tracks) * TAU + Math.sin(time * 0.18) * 0.2;
     for (let index = 0; index < particles; index += 1) {
-      const progress = (time * 0.42 + index / particles + track * 0.037) % 1;
+      const progress = (time * 0.3 + index / particles + track * 0.037) % 1;
       const z = progress * 2 - 1;
       const perspective = 0.12 + progress * progress * 1.08;
       const twist = heading + z * 0.72;
@@ -448,7 +448,6 @@ export function novaFrame(context: FrameContext): OrbFrame {
       addDot(frame, point, 0.45 + reach * 1.8, 0.06 + (1 - local) * 0.7 * expansion, 24 + local * 34);
     }
   }
-  addDot(frame, { x: center, y: center, z: 1 }, 2.2 + expansion * 3.2, 0.7 + expansion * 0.25, 44);
   return frame;
 }
 
@@ -751,7 +750,6 @@ export function echoFrame({ time, radius, density }: FrameContext): OrbFrame {
       addDot(frame, point, 0.35 + (1 - progress) * 1.1, alpha, 187 + ring * 20);
     }
   }
-  addDot(frame, { x: center, y: center, z: 1 }, 2.6 + Math.sin(time * 3) * 0.5, 0.9, 34);
   return frame;
 }
 
@@ -793,7 +791,7 @@ export function vortexFrame(context: FrameContext): OrbFrame {
     let previous: ProjectedPoint | undefined;
     for (let sample = 0; sample < samples; sample += 1) {
       const progress = sample / Math.max(1, samples - 1);
-      const angle = arm * (TAU / arms) + time * 1.6 + progress * TAU * 1.5;
+      const angle = arm * (TAU / arms) + time * 1.1 + progress * TAU * 1.5;
       const distance = 0.08 + progress * 0.92;
       const point = project(Math.cos(angle) * distance, (progress - 0.5) * 0.48, Math.sin(angle) * distance);
       addDot(frame, point, 0.34 + depth(point) * 1.15, 0.12 + progress * 0.52, 194 + progress * 85);

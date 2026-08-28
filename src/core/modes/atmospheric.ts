@@ -47,7 +47,6 @@ export function radianceFrame({ time, radius, density }: FrameContext): OrbFrame
       addDot(frame, point, 0.35 + progress * 0.8, 0.12 + progress * 0.58, tone);
     }
   }
-  addDot(frame, { x: center, y: center, z: 1 }, 2, 0.95, (time * 42) % 360);
   return frame;
 }
 
@@ -215,7 +214,5 @@ export function sparkleFrame(context: FrameContext): OrbFrame {
       34 + seed * 290,
     );
   }
-  const core = project(0, 0, 0);
-  addDot(frame, core, 1.6, 0.88, (context.time * 50) % 360);
   return frame;
 }

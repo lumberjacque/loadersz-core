@@ -7,7 +7,7 @@ const centerOf = (radius: number) => radius / 0.82;
 export function chartFrame({ time, radius, density }: FrameContext): OrbFrame {
   const frame = createFrame();
   const center = centerOf(radius);
-  const columns = 11;
+  const columns = Math.max(7, Math.min(20, Math.round(11 * density)));
   for (let column = 0; column < columns; column += 1) {
     const wave = (Math.sin(time * 1.7 + column * 1.28) + 1) / 2;
     const detail = (Math.sin(time * 0.72 - column * 2.17) + 1) / 2;
@@ -114,8 +114,6 @@ export function forecastFrame({ time, radius, density }: FrameContext): OrbFrame
       );
     previous = point;
   }
-  const boundary = center + (0.55 - 0.5) * radius * 1.6;
-  addDot(frame, { x: boundary, y: center, z: 0.84 }, 0.84, 0.82, 154);
   return frame;
 }
 

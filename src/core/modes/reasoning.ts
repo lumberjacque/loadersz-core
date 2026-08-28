@@ -123,7 +123,10 @@ export function branchFrame({ time, radius, density }: FrameContext): OrbFrame {
   };
   const root = { x: center, y: center + radius * 0.7, z: 0.8 };
   addDot(frame, root, 1.25, 0.86);
-  drawBranch(root, Math.PI / 2, radius * 0.48, 0, 0.21);
+  // Start with a visible choice rather than a trunk: the first two paths split
+  // directly from the root and make the mode read as branching immediately.
+  drawBranch(root, Math.PI / 2 - 0.48, radius * 0.45, 0, 0.21);
+  drawBranch(root, Math.PI / 2 + 0.48, radius * 0.45, 0, 0.79);
   const dust = Math.round(32 * density);
   for (let index = 0; index < dust; index += 1) {
     const seed = hash(index * 9.13);
@@ -153,8 +156,6 @@ export function apertureFrame(context: FrameContext): OrbFrame {
       addDot(frame, point, 0.34 + depth(point) * 1.12, 0.1 + depth(point) * 0.45 + focus * 0.08);
     }
   }
-  const center = project(0, 0, 0.4);
-  addDot(frame, center, 0.8 + focus * 1.6, 0.4 + focus * 0.5);
   return frame;
 }
 
@@ -302,7 +303,6 @@ export function queryFrame(context: FrameContext): OrbFrame {
   const core = project(0, 0, 0);
   addLine(frame, core, probe, 0.2, 0.46);
   addDot(frame, probe, 1.8, 0.94);
-  addDot(frame, core, 1.05, 0.52);
   return frame;
 }
 
@@ -354,8 +354,6 @@ export function considerFrame(context: FrameContext): OrbFrame {
   ];
   const count = Math.round(42 * context.density);
   centres.forEach((centre, candidate) => {
-    const core = project(...centre);
-    addDot(frame, core, 1.12, 0.62);
     for (let index = 0; index < count; index += 1) {
       const seed = hash(index * 5.17 + candidate * 9.3);
       const angle = seed * TAU + context.time * (0.42 + candidate * 0.08);
@@ -368,8 +366,6 @@ export function considerFrame(context: FrameContext): OrbFrame {
       addDot(frame, point, 0.28 + depth(point) * 0.78, 0.1 + depth(point) * 0.42);
     }
   });
-  const balance = project(0, 0.02, 0.74);
-  addDot(frame, balance, 1.5, 0.78);
   return frame;
 }
 
@@ -431,7 +427,6 @@ export function queueFrame({ time, radius, density }: FrameContext): OrbFrame {
       addDot(frame, point, 0.54 + depth(point) * 1.08, 0.3 + depth(point) * 0.54);
     }
   }
-  addDot(frame, project(0, 0, 0.32), 1.45, 0.78);
   return frame;
 }
 

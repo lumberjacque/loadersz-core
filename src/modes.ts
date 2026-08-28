@@ -5,12 +5,16 @@ import {
   apertureFrame,
   associateFrame,
   auroraFrame,
+  areaFrame,
+  barChartFrame,
+  bubbleChartFrame,
   bufferFrame,
   beatsFrame,
   branchFrame,
   bubblesFrame,
   cascadeFrame,
   condenseFrame,
+  comparisonFrame,
   considerFrame,
   circuitFrame,
   cognitionFrame,
@@ -20,6 +24,7 @@ import {
   cubeFrame,
   convergeFrame,
   deduceFrame,
+  donutFrame,
   evaluateFrame,
   flickerFrame,
   glimmerFrame,
@@ -35,6 +40,8 @@ import {
   flockFrame,
   flowerFrame,
   forgeFrame,
+  funnelFrame,
+  gaugeFrame,
   galaxyFrame,
   gyroscopeFrame,
   haloFrame,
@@ -74,10 +81,14 @@ import {
   surfaceFrame,
   shardsFrame,
   swarmFrame,
+  stackedFrame,
   synchronizeFrame,
   uploadFrame,
   tunnelFrame,
   traceFrame,
+  treemapFrame,
+  timelineFrame,
+  throughputFrame,
   unravelFrame,
   vortexFrame,
   waveFrame,
@@ -195,3 +206,14 @@ export const exploring = defineMode('exploring', exploreFrame);
 export const linking = defineMode('linking', linkFrame);
 export const resolving = defineMode('resolving', resolveFrame);
 export const imagining = defineMode('imagining', imagineFrame);
+export const barCharting = defineMode('bar-charting', barChartFrame);
+export const comparing = defineMode('comparing', comparisonFrame);
+export const accumulating = defineMode('accumulating', stackedFrame);
+export const sequencing = defineMode('sequencing', timelineFrame);
+export const transmitting = defineMode('transmitting', throughputFrame);
+export const summarizing = defineMode('summarizing', donutFrame);
+export const gauging = defineMode('gauging', gaugeFrame);
+export const funneling = defineMode('funneling', funnelFrame);
+export const treemapping = defineMode('treemapping', treemapFrame);
+export const bubbleCharting = defineMode('bubble-charting', bubbleChartFrame);
+export const areamapping = defineMode('areamapping', areaFrame);

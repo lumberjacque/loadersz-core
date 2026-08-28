@@ -152,7 +152,7 @@ export function benchmarkFrame({ time, radius, density }: FrameContext): OrbFram
       addDot(
         frame,
         { x, y: c + (0.5 - d / Math.max(1, dots - 1)) * radius * score * 1.4, z: d / dots },
-        0.42,
+        0.58,
         0.25 + (d / dots) * 0.65,
         252 + i * 15,
       );
@@ -173,7 +173,13 @@ export function profileFrame({ time, radius, density }: FrameContext): OrbFrame 
       const p = i / 17;
       if (p > width) continue;
       const hot = Math.max(0, 1 - Math.abs(p / width - head) * 8);
-      addDot(frame, { x: c + (p - 0.5) * radius * 1.62, y, z: hot }, 0.3 + hot * 0.6, 0.18 + hot * 0.7, 18 + row * 22);
+      addDot(
+        frame,
+        { x: c + (p - 0.5) * radius * 1.62, y, z: hot },
+        0.44 + hot * 0.68,
+        0.18 + hot * 0.7,
+        18 + row * 22,
+      );
     }
   }
   return frame;
@@ -188,7 +194,7 @@ export function histogramFrame({ time, radius, density }: FrameContext): OrbFram
     const height = 0.15 + Math.pow((Math.sin(time * 1.15 + i * 1.9) + 1) / 2, 1.6) * 0.7;
     const x = c + ((i - (bins - 1) / 2) * radius * 1.48) / bins;
     for (let d = 0; d < Math.max(2, Math.round(height * 8)); d += 1)
-      addDot(frame, { x, y: c + (0.5 - d / 6) * radius * height * 1.45, z: d / 8 }, 0.4, 0.22 + d * 0.08, 316 - i * 9);
+      addDot(frame, { x, y: c + (0.5 - d / 6) * radius * height * 1.45, z: d / 8 }, 0.54, 0.22 + d * 0.08, 316 - i * 9);
   }
   return frame;
 }
@@ -199,8 +205,8 @@ export function aggregateFrame({ time, radius, density }: FrameContext): OrbFram
   const c = centerOf(radius);
   const count = Math.max(18, Math.round(34 * density));
   for (let i = 0; i < count; i += 1) {
-    const p = (time * 0.22 + i / count) % 1;
-    const a = i * 2.4 + time;
+    const p = (time * 0.16 + i / count) % 1;
+    const a = i * 2.4 + time * 0.72;
     const r = radius * (0.72 - p * 0.56);
     addDot(
       frame,
@@ -210,7 +216,6 @@ export function aggregateFrame({ time, radius, density }: FrameContext): OrbFram
       162,
     );
   }
-  addDot(frame, { x: c, y: c, z: 1 }, 1.25, 0.92, 162);
   return frame;
 }
 
@@ -226,7 +231,7 @@ export function scrubberFrame({ time, radius, density }: FrameContext): OrbFrame
     addDot(
       frame,
       { x: c + (p - 0.5) * radius * 1.6, y: c + Math.sin(i * 2.7) * radius * 0.12, z: hot },
-      0.28 + hot * 1.1,
+      0.42 + hot * 1.16,
       0.14 + hot * 0.82,
       38,
     );
@@ -251,7 +256,7 @@ export function telemetryFrame({ time, radius, density }: FrameContext): OrbFram
       addDot(
         frame,
         { x: c + Math.cos(a) * r, y: c + Math.sin(a) * r, z: pulse },
-        0.22 + pulse * 0.68,
+        0.36 + pulse * 0.74,
         0.08 + pulse * 0.76,
         192 + ring * 24,
       );
@@ -269,7 +274,7 @@ export function pollingFrame({ time, radius, density }: FrameContext): OrbFrame 
     addDot(
       frame,
       { x: c + (age - 0.5) * radius * 1.54, y: c + Math.sin(age * TAU * 3 + i) * radius * 0.18, z: 1 - age },
-      0.32 + (1 - age) * 0.75,
+      0.46 + (1 - age) * 0.78,
       0.08 + Math.pow(1 - age, 2) * 0.82,
       128,
     );
@@ -288,7 +293,7 @@ export function correlationFrame({ time, radius, density }: FrameContext): OrbFr
     addDot(
       frame,
       { x: c + (p - 0.5) * radius * 1.48, y: c - ((p - 0.5) * 0.85 + noise) * radius, z: 0.2 },
-      0.34,
+      0.5,
       0.35 + (i % 4) * 0.1,
       i % 2 ? 206 : 296,
     );
@@ -300,7 +305,8 @@ export function correlationFrame({ time, radius, density }: FrameContext): OrbFr
 export function flowmapFrame({ time, radius, density }: FrameContext): OrbFrame {
   const frame = createFrame();
   const c = centerOf(radius);
-  const routes = [-0.38, 0, 0.38];
+  const routeCount = Math.max(3, Math.min(7, Math.round(3 * density)));
+  const routes = Array.from({ length: routeCount }, (_, route) => (route / Math.max(1, routeCount - 1) - 0.5) * 0.76);
   const packets = Math.max(2, Math.round(4 * density));
   routes.forEach((offset, route) => {
     let prev: ProjectedPoint | undefined;
