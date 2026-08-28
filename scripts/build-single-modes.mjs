@@ -22,7 +22,7 @@ for (const state of singleModes) {
         formats: ['es'],
         fileName: () => `${state}.js`,
       },
-      rollupOptions: { output: { codeSplitting: false } },
+      rolldownOptions: { output: { codeSplitting: false } },
     },
   });
 }

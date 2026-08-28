@@ -1,5 +1,5 @@
 import { createFixedModeElement, createFixedModeLoader } from '../core/FixedLoader';
-import { cubeFrame } from '../core/modes';
+import { cubeFrame } from '../core/modes/foundational';
 
 export type { LoaderszSingleModeOptions } from '../core/FixedLoader';
 
