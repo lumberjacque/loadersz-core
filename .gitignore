@@ -5,3 +5,7 @@ dist/
 .angular-consumer-build/
 website/playwright-report/
 website/test-results/
+.benchmark/
+benchmark-results/
+playwright-report/
+test-results/
