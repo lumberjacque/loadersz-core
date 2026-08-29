@@ -239,6 +239,7 @@
     "benchmark:cpu": "node scripts/run-cpu-benchmark.mjs",
     "benchmark:browser": "node scripts/run-browser-benchmark.mjs",
     "benchmark:browser:ab": "node scripts/run-browser-ab-benchmark.mjs",
+    "benchmark:assert": "node scripts/assert-browser-benchmark.mjs",
     "benchmark:ui": "vite build benchmark --outDir ../.benchmark/browser && vite preview benchmark --outDir ../.benchmark/browser --host 127.0.0.1 --port 4174",
     "benchmark:equivalence": "node scripts/compare-rendering.mjs",
     "benchmark:size": "node scripts/measure-bundles.mjs",
