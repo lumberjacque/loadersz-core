@@ -61,9 +61,13 @@ jobs:
         working-directory: candidate
         run: npm run benchmark:browser:ab -- --baseline .benchmark/baseline/frames.js --candidate .benchmark/candidate/frames.js --sample-ms 100 --samples 15 --output benchmark-results/browser-ci-ab.json
 
+      - name: Summarize and guard browser performance
+        working-directory: candidate
+        run: npm run benchmark:assert -- --input benchmark-results/browser-ci-ab.json --max-median-regression 20
+
       - name: Upload benchmark report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: browser-benchmark-${{ github.run_id }}
           path: candidate/benchmark-results/browser-ci-ab.json

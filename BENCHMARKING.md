@@ -46,7 +46,9 @@ For an iPhone, serve `.benchmark/browser` over the local network after running t
 
 The benchmark workflow runs on an ephemeral GitHub-hosted runner in the version-matched Playwright container. It has read-only repository permissions, receives no repository secrets, and uses the `pull_request` event rather than `pull_request_target`.
 
-Exact frame and Canvas command equivalence is a required check. Browser performance is uploaded as a report but is not a pass/fail gate because shared CI runners are too noisy for reliable regression thresholds. Confirm performance decisions locally on the same hardware and browser.
+Exact frame and Canvas command equivalence is a required check. The browser benchmark also rejects malformed reports and median regressions above 20%. This deliberately broad guardrail catches large regressions without treating noisy shared CI runners as precision instruments. P95 values and smaller changes remain informational and must be confirmed locally on the same hardware and browser.
+
+Each CI run writes a readable table to the GitHub Actions job summary. It shows baseline and candidate median time, the raw percentage delta, and a plain-English “faster” or “slower” interpretation for every workload.
 
 Benchmark reports contain repository-relative paths only. They do not read or include files outside the checked-out repositories.
 
