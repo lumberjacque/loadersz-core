@@ -19,7 +19,7 @@ export function createFrame(): OrbFrame {
  * @param tone Optional HSL hue for colourful modes.
  */
 export function addDot(frame: OrbFrame, point: ProjectedPoint, radius: number, alpha = 1, tone?: number): void {
-  if (alpha > 0.015) frame.dots.push({ ...point, radius, alpha, tone });
+  if (alpha > 0.015) frame.dots.push({ x: point.x, y: point.y, z: point.z, radius, alpha, tone });
 }
 
 /**
