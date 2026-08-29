@@ -1,4 +1,4 @@
-import type { OrbFrame, OrbTheme, ProjectedPoint } from './types';
+import type { OrbFrame, OrbTheme } from './types';
 
 function fillRoundedRect(
   context: CanvasRenderingContext2D,
@@ -26,17 +26,17 @@ function fillRoundedRect(
   context.fill();
 }
 
-/** Resolves one point or line to a depth-aware CSS colour string. */
+/** Resolves one drawable depth to a depth-aware CSS colour string. */
 function shade(
   theme: Exclude<OrbTheme, 'auto'>,
-  point: ProjectedPoint,
+  z: number,
   alpha: number,
   tone: number | undefined,
   hueOverride: number,
   colorOverride: string | undefined,
 ): string {
   if (colorOverride) return colorOverride;
-  const depth = (point.z + 1) / 2;
+  const depth = (z + 1) / 2;
   const brightness = 0.22 + depth * 0.68;
   const resolvedTone = hueOverride >= 0 ? hueOverride : tone;
   if (resolvedTone !== undefined) {
@@ -71,12 +71,12 @@ export function paintFrame(
     .sort((left, right) => left.z - right.z)
     .forEach((rect) => {
       context.globalAlpha = usesColorOverride ? rect.alpha : 1;
-      context.fillStyle = shade(theme, rect, rect.alpha, rect.tone, hueOverride, colorOverride);
+      context.fillStyle = shade(theme, rect.z, rect.alpha, rect.tone, hueOverride, colorOverride);
       fillRoundedRect(context, rect.x, rect.y, rect.width, rect.height, particleRadius * 1.65);
     });
   for (const arc of frame.arcs) {
     context.globalAlpha = usesColorOverride ? arc.alpha : 1;
-    context.strokeStyle = shade(theme, arc, arc.alpha, arc.tone, hueOverride, colorOverride);
+    context.strokeStyle = shade(theme, arc.z, arc.alpha, arc.tone, hueOverride, colorOverride);
     context.lineWidth = arc.width;
     context.lineCap = arc.cap ?? 'round';
     context.beginPath();
@@ -84,9 +84,15 @@ export function paintFrame(
     context.stroke();
   }
   for (const line of frame.lines) {
-    const midpoint = { x: 0, y: 0, z: (line.from.z + line.to.z) / 2 };
     context.globalAlpha = usesColorOverride ? line.alpha : 1;
-    context.strokeStyle = shade(theme, midpoint, line.alpha, line.tone, hueOverride, colorOverride);
+    context.strokeStyle = shade(
+      theme,
+      (line.from.z + line.to.z) / 2,
+      line.alpha,
+      line.tone,
+      hueOverride,
+      colorOverride,
+    );
     context.lineWidth = line.width;
     context.beginPath();
     context.moveTo(line.from.x, line.from.y);
@@ -97,7 +103,7 @@ export function paintFrame(
     .sort((left, right) => left.z - right.z)
     .forEach((dot) => {
       context.globalAlpha = usesColorOverride ? dot.alpha : 1;
-      context.fillStyle = shade(theme, dot, dot.alpha, dot.tone, hueOverride, colorOverride);
+      context.fillStyle = shade(theme, dot.z, dot.alpha, dot.tone, hueOverride, colorOverride);
       context.beginPath();
       context.arc(dot.x, dot.y, dot.radius * particleRadius, 0, Math.PI * 2);
       context.fill();
