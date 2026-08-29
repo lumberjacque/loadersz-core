@@ -21,4 +21,12 @@ describe('orb modes', () => {
   it('is deterministic for a fixed point in time', () => {
     expect(buildFrame('network', frameContext)).toEqual(buildFrame('network', frameContext));
   });
+
+  it('adds treemap partitions as density increases', () => {
+    const sparse = buildFrame('treemap', { ...frameContext, density: 0.5 });
+    const detailed = buildFrame('treemap', { ...frameContext, density: 2 });
+
+    expect(sparse.rects).toHaveLength(4);
+    expect(detailed.rects).toHaveLength(12);
+  });
 });

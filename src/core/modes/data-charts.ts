@@ -160,45 +160,74 @@ export function funnelFrame({ time, radius, density }: FrameContext): OrbFrame {
 }
 
 /** Builds `treemapping`: a shifting treemap partitions a dashboard into weighted live blocks. */
-export function treemapFrame({ time, radius }: FrameContext): OrbFrame {
+export function treemapFrame(context: FrameContext): OrbFrame {
   const frame = createFrame();
+  const { time, radius } = context;
   const center = centerOf(radius);
   const left = center - radius * 0.72;
   const top = center - radius * 0.57;
   const width = radius * 1.44;
   const height = radius * 1.14;
-  const split = 0.42 + oscillate(time, 0.5, 0.5) * 0.16;
-  const leftWidth = width * split;
-  const gap = 2;
-  addRect(frame, { x: left, y: top, width: leftWidth - gap, height, z: 0.2 }, 0.6, 194);
-  const rightX = left + leftWidth + gap;
-  const rightWidth = width - leftWidth - gap;
-  const upper = 0.4 + oscillate(time, 2.4, 0.7) * 0.23;
-  addRect(frame, { x: rightX, y: top, width: rightWidth, height: height * upper - gap, z: 0.45 }, 0.68, 276);
-  addRect(
-    frame,
-    {
-      x: rightX,
-      y: top + height * upper + gap,
-      width: rightWidth * 0.56 - gap,
-      height: height * (1 - upper) - gap,
-      z: 0.65,
-    },
-    0.72,
-    32,
-  );
-  addRect(
-    frame,
-    {
-      x: rightX + rightWidth * 0.56 + gap,
-      y: top + height * upper + gap,
-      width: rightWidth * 0.44 - gap,
-      height: height * (1 - upper) - gap,
-      z: 0.8,
-    },
-    0.76,
-    152,
-  );
+  const leaves = densityCount(context, { base: 6, minimum: 4, maximum: 14 });
+  const gap = Math.min(2, Math.max(0.6, radius * 0.05));
+  const tones = [194, 276, 32, 152, 338, 72];
+
+  const partition = (
+    x: number,
+    y: number,
+    partitionWidth: number,
+    partitionHeight: number,
+    count: number,
+    index: number,
+    depth: number,
+  ): void => {
+    if (count === 1) {
+      const inset = Math.min(gap * 0.5, partitionWidth * 0.12, partitionHeight * 0.12);
+      addRect(
+        frame,
+        {
+          x: x + inset,
+          y: y + inset,
+          width: Math.max(0.4, partitionWidth - inset * 2),
+          height: Math.max(0.4, partitionHeight - inset * 2),
+          z: 0.2 + (index / Math.max(1, leaves)) * 0.68,
+        },
+        0.56 + oscillate(time, index * 1.43, 0.72) * 0.28,
+        tones[index % tones.length],
+      );
+      return;
+    }
+
+    // A stable uneven split keeps the treemap from resolving into repeated
+    // 2×2 groups while still preserving a deterministic topology per density.
+    const splitSeed = oscillate(0, index * 2.37 + depth * 1.91 + 1.1);
+    const firstCount = Math.max(1, Math.min(count - 1, Math.round(count * (0.36 + splitSeed * 0.24))));
+    const secondCount = count - firstCount;
+    const preferred = firstCount / count;
+    const ratio = Math.min(
+      0.68,
+      Math.max(0.32, preferred + (oscillate(time, index * 1.19 + depth, 0.42) - 0.5) * 0.16),
+    );
+    // Keep the partition topology stable while the weighted split breathes.
+    // Choosing from the live aspect ratio makes a branch abruptly flip axes
+    // when its animated width and height briefly cross over.
+    const horizontal = depth % 2 === 0;
+    const span = horizontal ? partitionWidth : partitionHeight;
+    const splitGap = Math.min(gap, span * 0.16);
+    const firstSpan = Math.max(0.4, (span - splitGap) * ratio);
+    const secondSpan = Math.max(0.4, span - splitGap - firstSpan);
+
+    if (horizontal) {
+      partition(x, y, firstSpan, partitionHeight, firstCount, index, depth + 1);
+      partition(x + firstSpan + splitGap, y, secondSpan, partitionHeight, secondCount, index + firstCount, depth + 1);
+      return;
+    }
+
+    partition(x, y, partitionWidth, firstSpan, firstCount, index, depth + 1);
+    partition(x, y + firstSpan + splitGap, partitionWidth, secondSpan, secondCount, index + firstCount, depth + 1);
+  };
+
+  partition(left, top, width, height, leaves, 0, 0);
   return frame;
 }
 
