@@ -296,6 +296,16 @@ npm run hooks:install
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org/). Pre-commit checks format and lint staged files. The release package intentionally contains no install lifecycle scripts.
 
+### Browser benchmark UI
+
+Start the interactive production-build benchmark:
+
+```bash
+npm run benchmark:ui
+```
+
+Open <http://127.0.0.1:4174>, choose a scenario, and select **Run benchmark**. Stop the local server with `Ctrl+C`. See [BENCHMARKING.md](BENCHMARKING.md) for A/B comparisons, equivalence checks, CI behaviour, and measurement rules.
+
 ## License
 
 [MIT](LICENSE) © 2026 lumberjacque.

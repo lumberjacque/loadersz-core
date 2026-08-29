@@ -1,0 +1,75 @@
+name: Benchmark
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: benchmark-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    name: Equivalence and browser benchmark
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.62.1-noble
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@v6
+        with:
+          path: candidate
+
+      - name: Check out baseline
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.event.before || github.event.repository.default_branch }}
+          path: baseline
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: candidate/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: candidate
+        run: npm ci --ignore-scripts
+
+      - name: Build baseline and candidate benchmark bundles
+        shell: bash
+        run: |
+          mkdir -p baseline/benchmark
+          cp -R candidate/benchmark/. baseline/benchmark/
+          cd baseline
+          node ../candidate/scripts/build-benchmark.mjs --out-dir ../candidate/.benchmark/baseline
+          cd ../candidate
+          npm run build:benchmark -- --out-dir .benchmark/candidate
+
+      - name: Require exact rendering equivalence
+        working-directory: candidate
+        run: npm run benchmark:equivalence -- --baseline .benchmark/baseline/frames.js --candidate .benchmark/candidate/frames.js
+
+      - name: Measure browser performance
+        working-directory: candidate
+        run: npm run benchmark:browser:ab -- --baseline .benchmark/baseline/frames.js --candidate .benchmark/candidate/frames.js --sample-ms 100 --samples 15 --output benchmark-results/browser-ci-ab.json
+
+      - name: Summarize and guard browser performance
+        working-directory: candidate
+        run: npm run benchmark:assert -- --input benchmark-results/browser-ci-ab.json --max-median-regression 20
+
+      - name: Upload benchmark report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: browser-benchmark-${{ github.run_id }}
+          path: candidate/benchmark-results/browser-ci-ab.json
+          if-no-files-found: ignore
+          retention-days: 14

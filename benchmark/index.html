@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Loadersz browser benchmark</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        background: #090a0c;
+        color: #f4f4f5;
+        font:
+          14px/1.5 Inter,
+          ui-sans-serif,
+          system-ui,
+          sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 24px;
+      }
+      main {
+        width: min(1100px, 100%);
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0 0 4px;
+        font-size: clamp(24px, 5vw, 40px);
+        letter-spacing: -0.04em;
+      }
+      .intro {
+        margin: 0 0 24px;
+        color: #a1a1aa;
+      }
+      form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
+        padding: 16px;
+        border: 1px solid #27272a;
+        border-radius: 14px;
+        background: #111215;
+      }
+      label {
+        display: grid;
+        gap: 6px;
+        color: #a1a1aa;
+        font-size: 12px;
+      }
+      select,
+      input,
+      button {
+        min-height: 40px;
+        border: 1px solid #3f3f46;
+        border-radius: 8px;
+        background: #18181b;
+        color: inherit;
+        font: inherit;
+        padding: 8px 10px;
+      }
+      button {
+        align-self: end;
+        cursor: pointer;
+        border-color: #e4e4e7;
+        background: #f4f4f5;
+        color: #09090b;
+        font-weight: 700;
+      }
+      button:disabled {
+        cursor: wait;
+        opacity: 0.6;
+      }
+      #status {
+        min-height: 24px;
+        margin: 18px 0;
+        color: #d4d4d8;
+      }
+      #loaders {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+        place-items: center;
+        gap: 6px;
+        min-height: 144px;
+        padding: 16px;
+        border: 1px solid #27272a;
+        border-radius: 14px;
+      }
+      #result {
+        overflow: auto;
+        margin-top: 16px;
+        padding: 16px;
+        border-radius: 14px;
+        background: #111215;
+        color: #d4d4d8;
+        font:
+          12px/1.5 ui-monospace,
+          SFMono-Regular,
+          Consolas,
+          monospace;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Loadersz browser benchmark</h1>
+      <p class="intro">
+        Run one production-build stress scenario and inspect the animated
+        loaders while it is measured.
+      </p>
+      <form id="benchmark-form">
+        <label
+          >Scenario<select name="scenario">
+            <option value="projector">Projector-heavy</option>
+            <option value="mixed">Mixed</option>
+            <option value="control">Control</option>
+          </select></label
+        >
+        <label
+          >Loader count<input
+            name="count"
+            type="number"
+            min="1"
+            max="100"
+            step="1"
+            value="10"
+            required
+        /></label>
+        <label
+          >Density<select name="density">
+            <option value="1">1×</option>
+            <option value="2" selected>2×</option>
+          </select></label
+        >
+        <label
+          >Size (px)<input
+            name="size"
+            type="number"
+            min="24"
+            max="320"
+            step="8"
+            value="64"
+            required
+        /></label>
+        <label
+          >Warm-up (ms)<input
+            name="warmup"
+            type="number"
+            min="0"
+            max="60000"
+            step="100"
+            value="2000"
+            required
+        /></label>
+        <label
+          >Sample duration (ms)<input
+            name="duration"
+            type="number"
+            min="100"
+            max="120000"
+            step="100"
+            value="5000"
+            required
+        /></label>
+        <button type="submit">Run benchmark</button>
+      </form>
+      <p id="status" role="status">Choose a scenario and run the benchmark.</p>
+      <div id="loaders" aria-label="Animated loaders under test"></div>
+      <pre id="result">No result yet.</pre>
+    </main>
+    <script type="module" src="./browser.ts"></script>
+  </body>
+</html>
