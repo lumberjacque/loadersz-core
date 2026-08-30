@@ -1,5 +1,6 @@
 import { clamp } from './math';
 import { DEFAULT_OPTIONS, mergeOptions } from './options';
+import { assignFallbackPaletteRoles, resolveCssColor, resolvePalette, subscribeToColorEnvironment } from './palette';
 import { paintFrame } from './renderer';
 import { prefersReducedMotion, resolveTheme } from './theme';
 import type { FrameContext, LoaderszOrbOptions, OrbFrame } from './types';
@@ -19,6 +20,8 @@ export class CanvasLoader {
   private readonly motionQuery: MediaQueryList;
   private animationFrame: number | null = null;
   private colorOverride: string | undefined;
+  private paletteOverride: string[] | undefined;
+  private unsubscribeFromColorEnvironment: (() => void) | undefined;
   private elapsed = 0.6;
   private clockAnchor = performance.now();
   private usesLegacyMotionListener = false;
@@ -36,7 +39,8 @@ export class CanvasLoader {
     this.options = mergeOptions(options);
     this.motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     this.configureCanvas();
-    this.refreshColorOverride();
+    this.refreshColors();
+    this.syncColorEnvironmentSubscription();
     this.bindLifecycle();
     this.draw();
     this.syncAnimation();
@@ -49,7 +53,8 @@ export class CanvasLoader {
     this.clockAnchor = now;
     this.options = mergeOptions({ ...this.options, ...options });
     if (options.size !== undefined) this.configureCanvas();
-    if (options.color !== undefined) this.refreshColorOverride();
+    if (options.color !== undefined || options.palette !== undefined) this.refreshColors();
+    this.syncColorEnvironmentSubscription();
     if (options.ariaLabel !== undefined) this.canvas.setAttribute('aria-label', this.options.ariaLabel);
     this.draw();
     this.syncAnimation();
@@ -62,6 +67,39 @@ export class CanvasLoader {
     document.removeEventListener('visibilitychange', this.onDocumentVisibility);
     if (this.usesLegacyMotionListener) this.motionQuery.removeListener(this.onMotionPreference);
     else this.motionQuery.removeEventListener('change', this.onMotionPreference);
+    this.unsubscribeFromColorEnvironment?.();
+    this.unsubscribeFromColorEnvironment = undefined;
+  }
+
+  /**
+   * Re-resolves CSS colours and redraws the current frame without changing its timeline phase.
+   *
+   * Call this after changing a custom property in a local scope that is not `html` or `body`.
+   *
+   * @returns Nothing.
+   */
+  refresh(): void {
+    this.refreshColors();
+    this.draw();
+  }
+
+  /**
+   * Gets a defensive copy of the active caller palette.
+   *
+   * @returns The normalized, unvalidated CSS colour candidates in display order.
+   */
+  get palette(): readonly string[] {
+    return [...this.options.palette];
+  }
+
+  /**
+   * Replaces the caller palette without changing any other rendering option.
+   *
+   * @param palette Ordered CSS colours. Empty arrays restore `color`, `hue`, or native treatment.
+   * @returns Nothing.
+   */
+  set palette(palette: readonly string[]) {
+    this.setOptions({ palette });
   }
 
   private configureCanvas(): void {
@@ -99,12 +137,14 @@ export class CanvasLoader {
       },
       this.options,
     );
+    if (this.paletteOverride) assignFallbackPaletteRoles(frame, this.paletteOverride.length);
     paintFrame(
       this.context,
       frame,
       resolveTheme(this.options.theme),
       this.options.hue,
       this.colorOverride,
+      this.paletteOverride,
       clamp(this.options.particleRadius, 0.5, 2.5),
     );
   }
@@ -137,19 +177,28 @@ export class CanvasLoader {
     this.syncAnimation();
   };
 
-  /** Resolves CSS colours, including inherited custom properties, once per option update. */
-  private refreshColorOverride(): void {
+  /** Resolves CSS colours, including inherited custom properties, outside the render loop. */
+  private refreshColors(): void {
     const color = this.options.color.trim();
-    if (!color) {
-      this.colorOverride = undefined;
+    this.colorOverride = color ? resolveCssColor(this.canvas, color) : undefined;
+    const palette = resolvePalette(this.canvas, this.options.palette);
+    this.paletteOverride = palette.length ? palette : undefined;
+  }
+
+  /** Installs one shared theme-token observer only while CSS colours are in use. */
+  private syncColorEnvironmentSubscription(): void {
+    const usesCssColor = Boolean(this.options.color.trim() || this.options.palette.length);
+    if (usesCssColor && !this.unsubscribeFromColorEnvironment) {
+      this.unsubscribeFromColorEnvironment = subscribeToColorEnvironment(this.onColorEnvironmentChange);
       return;
     }
-    const previous = this.canvas.style.color;
-    this.canvas.style.color = '';
-    this.canvas.style.color = color;
-    this.colorOverride = this.canvas.style.color ? getComputedStyle(this.canvas).color : undefined;
-    this.canvas.style.color = previous;
+    if (!usesCssColor && this.unsubscribeFromColorEnvironment) {
+      this.unsubscribeFromColorEnvironment();
+      this.unsubscribeFromColorEnvironment = undefined;
+    }
   }
+
+  private readonly onColorEnvironmentChange = (): void => this.refresh();
 
   private currentTime(now: number): number {
     return this.elapsed + ((now - this.clockAnchor) / 1000) * this.options.speed;

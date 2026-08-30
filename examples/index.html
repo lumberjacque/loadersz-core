@@ -124,7 +124,8 @@
         padding: 24px;
         background:
           lightgray 0.5px,
-          repeating-conic-gradient(#0000 0% 25%, #0000001a 0% 50%) 50% / 12px 12px;
+          repeating-conic-gradient(#0000 0% 25%, #0000001a 0% 50%) 50% / 12px
+            12px;
       }
       .selected-preview loadersz-loader {
         transform: scale(1.04);
@@ -315,7 +316,10 @@
           type="search"
           placeholder="Search states"
           autocomplete="off"
-        /><span class="legend">Click a tile to open it in the playground · use arrow keys to browse</span>
+        /><span class="legend"
+          >Click a tile to open it in the playground · use arrow keys to
+          browse</span
+        >
       </div>
       <section class="inspector" aria-label="Selected loader playground">
         <div class="selected-preview">
@@ -379,6 +383,7 @@
               <option value="native">Native</option>
               <option value="hue">Hue</option>
               <option value="css">CSS color</option>
+              <option value="palette">Palette</option>
             </select></label
           >
           <label id="hue-control" hidden
@@ -388,6 +393,13 @@
           /></label>
           <label id="css-color-control" hidden
             >CSS color<input id="color" type="color" value="#f1633d"
+          /></label>
+          <label id="palette-control" hidden
+            >Palette<input
+              id="palette"
+              type="text"
+              value="#f1633d; #635bff; #2ea44f; #f9c513; #ff7eb6"
+              spellcheck="false"
           /></label>
         </div>
       </section>
@@ -413,6 +425,7 @@
         colorMode: document.querySelector("#color-mode"),
         hue: document.querySelector("#hue"),
         color: document.querySelector("#color"),
+        palette: document.querySelector("#palette"),
       };
       const outputs = {
         size: document.querySelector("#size-output"),
@@ -423,6 +436,7 @@
       };
       const hueControl = document.querySelector("#hue-control");
       const cssColorControl = document.querySelector("#css-color-control");
+      const paletteControl = document.querySelector("#palette-control");
       document.querySelector("#count").textContent =
         `${LOADER_STATES.length} states`;
 
@@ -445,12 +459,9 @@
 
       document.addEventListener("keydown", (event) => {
         if (
-          ![
-            "ArrowLeft",
-            "ArrowRight",
-            "ArrowUp",
-            "ArrowDown",
-          ].includes(event.key) ||
+          !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(
+            event.key,
+          ) ||
           event.altKey ||
           event.ctrlKey ||
           event.metaKey ||
@@ -470,7 +481,8 @@
         const direction =
           event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
         const nextIndex =
-          (selectedIndex + direction + visibleCards.length) % visibleCards.length;
+          (selectedIndex + direction + visibleCards.length) %
+          visibleCards.length;
         selectCard(visibleCards[nextIndex]);
       });
 
@@ -494,7 +506,7 @@
               selectCard(card);
             }
           });
-          if (state === "working") selectCard(card);
+          if (state === "loading") selectCard(card);
           grid.append(card);
         });
         gallery.append(section);
@@ -531,15 +543,23 @@
         const colorMode = controls.colorMode.value;
         hueControl.hidden = colorMode !== "hue";
         cssColorControl.hidden = colorMode !== "css";
+        paletteControl.hidden = colorMode !== "palette";
         if (colorMode === "native") {
           selectedLoader.setAttribute("hue", "-1");
           selectedLoader.removeAttribute("color");
+          selectedLoader.removeAttribute("palette");
         } else if (colorMode === "hue") {
           selectedLoader.setAttribute("hue", controls.hue.value);
           selectedLoader.removeAttribute("color");
-        } else {
+          selectedLoader.removeAttribute("palette");
+        } else if (colorMode === "css") {
           selectedLoader.setAttribute("hue", "-1");
           selectedLoader.setAttribute("color", controls.color.value);
+          selectedLoader.removeAttribute("palette");
+        } else {
+          selectedLoader.setAttribute("hue", "-1");
+          selectedLoader.removeAttribute("color");
+          selectedLoader.setAttribute("palette", controls.palette.value);
         }
         outputs.size.textContent = controls.size.value;
         outputs.speed.textContent = `${controls.speed.value}×`;

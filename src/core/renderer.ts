@@ -34,11 +34,23 @@ function shade(
   tone: number | undefined,
   hueOverride: number,
   colorOverride: string | undefined,
+  palette: readonly string[] | undefined,
+  paletteRole: number | null | undefined,
 ): string {
-  if (colorOverride) return colorOverride;
+  const preservesNativeMaterial = Boolean(palette?.length && paletteRole === null);
+  if (palette?.length && paletteRole !== null) {
+    const paletteIndex =
+      paletteRole === undefined
+        ? tone === undefined
+          ? 0
+          : Math.floor(((((tone % 360) + 360) % 360) / 360) * palette.length) % palette.length
+        : ((paletteRole % palette.length) + palette.length) % palette.length;
+    return palette[paletteIndex];
+  }
+  if (colorOverride && !preservesNativeMaterial) return colorOverride;
   const depth = (z + 1) / 2;
   const brightness = 0.22 + depth * 0.68;
-  const resolvedTone = hueOverride >= 0 ? hueOverride : tone;
+  const resolvedTone = preservesNativeMaterial ? tone : hueOverride >= 0 ? hueOverride : tone;
   if (resolvedTone !== undefined) {
     const lightness = theme === 'dark' ? 42 + brightness * 32 : 30 + brightness * 16;
     return `hsl(${resolvedTone} 86% ${lightness}% / ${alpha})`;
@@ -54,6 +66,8 @@ function shade(
  * @param frame Geometry produced by a frame builder.
  * @param theme Concrete theme; resolve `auto` before calling.
  * @param hueOverride Hue in `0`–`360`, or `-1` to keep each mode's native tones.
+ * @param colorOverride Resolved one-colour override. Ignored when `palette` contains valid colours.
+ * @param palette Resolved palette override. Short palettes repeat across visual roles.
  * @param particleRadius Multiplier for particle/arc widths and rectangle corner rounding, clamped by the caller to `0.5`–`2.5`.
  * @returns Nothing. The caller is responsible for clearing the canvas first.
  */
@@ -63,28 +77,48 @@ export function paintFrame(
   theme: Exclude<OrbTheme, 'auto'>,
   hueOverride = -1,
   colorOverride?: string,
+  palette?: readonly string[],
   particleRadius = 1,
 ): void {
-  const usesColorOverride = Boolean(colorOverride);
+  const usesExternalColor = (paletteRole: number | null | undefined): boolean =>
+    Boolean((colorOverride && !(palette?.length && paletteRole === null)) || (palette?.length && paletteRole !== null));
   context.save();
   [...frame.rects]
     .sort((left, right) => left.z - right.z)
     .forEach((rect) => {
-      context.globalAlpha = usesColorOverride ? rect.alpha : 1;
-      context.fillStyle = shade(theme, rect.z, rect.alpha, rect.tone, hueOverride, colorOverride);
+      context.globalAlpha = usesExternalColor(rect.paletteRole) ? rect.alpha : 1;
+      context.fillStyle = shade(
+        theme,
+        rect.z,
+        rect.alpha,
+        rect.tone,
+        hueOverride,
+        colorOverride,
+        palette,
+        rect.paletteRole,
+      );
       fillRoundedRect(context, rect.x, rect.y, rect.width, rect.height, particleRadius * 1.65);
     });
-  for (const arc of frame.arcs) {
-    context.globalAlpha = usesColorOverride ? arc.alpha : 1;
-    context.strokeStyle = shade(theme, arc.z, arc.alpha, arc.tone, hueOverride, colorOverride);
+  frame.arcs.forEach((arc) => {
+    context.globalAlpha = usesExternalColor(arc.paletteRole) ? arc.alpha : 1;
+    context.strokeStyle = shade(
+      theme,
+      arc.z,
+      arc.alpha,
+      arc.tone,
+      hueOverride,
+      colorOverride,
+      palette,
+      arc.paletteRole,
+    );
     context.lineWidth = arc.width;
     context.lineCap = arc.cap ?? 'round';
     context.beginPath();
     context.arc(arc.x, arc.y, arc.radius, arc.startAngle, arc.endAngle);
     context.stroke();
-  }
-  for (const line of frame.lines) {
-    context.globalAlpha = usesColorOverride ? line.alpha : 1;
+  });
+  frame.lines.forEach((line) => {
+    context.globalAlpha = usesExternalColor(line.paletteRole) ? line.alpha : 1;
     context.strokeStyle = shade(
       theme,
       (line.from.z + line.to.z) / 2,
@@ -92,18 +126,29 @@ export function paintFrame(
       line.tone,
       hueOverride,
       colorOverride,
+      palette,
+      line.paletteRole,
     );
     context.lineWidth = line.width;
     context.beginPath();
     context.moveTo(line.from.x, line.from.y);
     context.lineTo(line.to.x, line.to.y);
     context.stroke();
-  }
+  });
   [...frame.dots]
     .sort((left, right) => left.z - right.z)
     .forEach((dot) => {
-      context.globalAlpha = usesColorOverride ? dot.alpha : 1;
-      context.fillStyle = shade(theme, dot.z, dot.alpha, dot.tone, hueOverride, colorOverride);
+      context.globalAlpha = usesExternalColor(dot.paletteRole) ? dot.alpha : 1;
+      context.fillStyle = shade(
+        theme,
+        dot.z,
+        dot.alpha,
+        dot.tone,
+        hueOverride,
+        colorOverride,
+        palette,
+        dot.paletteRole,
+      );
       context.beginPath();
       context.arc(dot.x, dot.y, dot.radius * particleRadius, 0, Math.PI * 2);
       context.fill();

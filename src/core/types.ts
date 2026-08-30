@@ -337,6 +337,11 @@ export interface LoaderszOrbOptions {
   hue?: number;
   /** A CSS colour such as `#c8f135`, `oklch(78% 0.18 118)`, or `var(--brand)`. When present, it overrides `hue`. */
   color?: string;
+  /**
+   * Ordered CSS colours used instead of a mode's native palette. Accepts one to eight entries;
+   * shorter palettes cycle through visual roles. Takes precedence over `color` and `hue`.
+   */
+  palette?: readonly string[];
 }
 
 /** A 2D point after a 3D coordinate has been projected onto the canvas. */
@@ -351,6 +356,8 @@ export interface Dot extends ProjectedPoint {
   radius: number;
   alpha: number;
   tone?: number;
+  /** Internal stable palette role. `null` deliberately preserves native material when a palette is set. */
+  paletteRole?: number | null;
 }
 
 /** A drawable line segment between two projected points. */
@@ -360,6 +367,8 @@ export interface OrbLine {
   alpha: number;
   width: number;
   tone?: number;
+  /** Internal stable palette role. `null` deliberately preserves native material when a palette is set. */
+  paletteRole?: number | null;
 }
 
 /** A filled rectangular mark, used by chart and interface-like visual states. */
@@ -376,6 +385,8 @@ export interface OrbRect extends ProjectedPoint {
   alpha: number;
   /** Optional HSL hue used by colourful modes. */
   tone?: number;
+  /** Internal stable palette role. `null` deliberately preserves native material when a palette is set. */
+  paletteRole?: number | null;
 }
 
 /** A stroked circular arc, used by gauges and segmented circular charts. */
@@ -396,6 +407,8 @@ export interface OrbArc extends ProjectedPoint {
   alpha: number;
   /** Optional HSL hue used by colourful modes. */
   tone?: number;
+  /** Internal stable palette role. `null` deliberately preserves native material when a palette is set. */
+  paletteRole?: number | null;
   /** End-cap shape. `round` is the default; `butt` preserves precise segment gaps. */
   cap?: 'round' | 'butt';
 }

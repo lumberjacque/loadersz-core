@@ -59,6 +59,25 @@ export class LoaderszLoader {
   /** Exact CSS colour, including CSS variables. Bind with `[color]`. */
   @Input() @HostBinding('attr.color') color?: string;
 
+  private paletteAttribute: string | null = null;
+
+  /** Ordered CSS colours. Bind with `[palette]`; the directive serializes the native semicolon attribute. */
+  @Input()
+  set palette(value: LoaderszOrbOptions['palette']) {
+    this.paletteAttribute =
+      value
+        ?.map((color) => color.trim())
+        .filter(Boolean)
+        .slice(0, 8)
+        .join('; ') || null;
+  }
+
+  /** Serialized native attribute kept separate from the typed array input. */
+  @HostBinding('attr.palette')
+  get nativePalette(): string | null {
+    return this.paletteAttribute;
+  }
+
   /** Canvas theme: `auto`, `light`, or `dark`. Bind with `[theme]`. */
   @Input() @HostBinding('attr.theme') theme?: LoaderszOrbOptions['theme'];
 

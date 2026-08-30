@@ -293,7 +293,8 @@ export function cubeFrame(context: FrameContext): OrbFrame {
     { axis: 1, slice: 'negative', angle: Math.PI / 2 },
   ] as const;
   const moveDuration = 1.05;
-  const activeMove = moves[Math.floor(time / moveDuration) % moves.length];
+  const activeMoveIndex = Math.floor(time / moveDuration) % moves.length;
+  const activeMove = moves[activeMoveIndex];
   const moveProgress = (time % moveDuration) / moveDuration;
   const turn = smoothstep(Math.min(1, moveProgress / 0.72)) * activeMove.angle;
   const faces: Array<{ axis: number; sign: number }> = [
@@ -331,6 +332,7 @@ export function cubeFrame(context: FrameContext): OrbFrame {
           0.75 + depth(point) * 1.1 + (active ? 0.4 : 0),
           0.24 + depth(point) * 0.68,
           active ? 36 + activeMove.axis * 76 : undefined,
+          active ? activeMoveIndex : null,
         );
       }
     }

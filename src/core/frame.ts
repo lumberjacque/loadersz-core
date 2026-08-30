@@ -17,9 +17,17 @@ export function createFrame(): OrbFrame {
  * @param radius Particle radius in canvas pixels.
  * @param alpha Opacity; values at or below `0.015` are ignored.
  * @param tone Optional HSL hue for colourful modes.
+ * @param paletteRole Optional stable palette role; use `null` to preserve native material with a caller palette.
  */
-export function addDot(frame: OrbFrame, point: ProjectedPoint, radius: number, alpha = 1, tone?: number): void {
-  if (alpha > 0.015) frame.dots.push({ x: point.x, y: point.y, z: point.z, radius, alpha, tone });
+export function addDot(
+  frame: OrbFrame,
+  point: ProjectedPoint,
+  radius: number,
+  alpha = 1,
+  tone?: number,
+  paletteRole?: number | null,
+): void {
+  if (alpha > 0.015) frame.dots.push({ x: point.x, y: point.y, z: point.z, radius, alpha, tone, paletteRole });
 }
 
 /**
@@ -31,6 +39,7 @@ export function addDot(frame: OrbFrame, point: ProjectedPoint, radius: number, a
  * @param alpha Opacity; values at or below `0.015` are ignored.
  * @param width Stroke width in canvas pixels.
  * @param tone Optional HSL hue.
+ * @param paletteRole Optional stable palette role; use `null` to preserve native material with a caller palette.
  */
 export function addLine(
   frame: OrbFrame,
@@ -39,8 +48,9 @@ export function addLine(
   alpha: number,
   width: number,
   tone?: number,
+  paletteRole?: number | null,
 ): void {
-  if (alpha > 0.015) frame.lines.push({ from, to, alpha, width, tone });
+  if (alpha > 0.015) frame.lines.push({ from, to, alpha, width, tone, paletteRole });
 }
 
 /**
@@ -50,15 +60,17 @@ export function addLine(
  * @param rect Rectangle position, dimensions and depth.
  * @param alpha Opacity; values at or below `0.015` are ignored.
  * @param tone Optional HSL hue.
+ * @param paletteRole Optional stable palette role; use `null` to preserve native material with a caller palette.
  */
 export function addRect(
   frame: OrbFrame,
   rect: { x: number; y: number; width: number; height: number; z?: number },
   alpha = 1,
   tone?: number,
+  paletteRole?: number | null,
 ): void {
   if (alpha > 0.015 && rect.width > 0 && rect.height > 0) {
-    frame.rects.push({ ...rect, z: rect.z ?? 0, alpha, tone });
+    frame.rects.push({ ...rect, z: rect.z ?? 0, alpha, tone, paletteRole });
   }
 }
 
@@ -69,6 +81,7 @@ export function addRect(
  * @param arc Arc centre, radius, angles, width and depth.
  * @param alpha Opacity; values at or below `0.015` are ignored.
  * @param tone Optional HSL hue.
+ * @param paletteRole Optional stable palette role; use `null` to preserve native material with a caller palette.
  */
 export function addArc(
   frame: OrbFrame,
@@ -84,9 +97,10 @@ export function addArc(
   },
   alpha = 1,
   tone?: number,
+  paletteRole?: number | null,
 ): void {
   if (alpha > 0.015 && arc.radius > 0 && arc.width > 0) {
-    frame.arcs.push({ ...arc, z: arc.z ?? 0, alpha, tone });
+    frame.arcs.push({ ...arc, z: arc.z ?? 0, alpha, tone, paletteRole });
   }
 }
 

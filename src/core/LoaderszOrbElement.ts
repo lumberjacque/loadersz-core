@@ -1,5 +1,6 @@
 import { LoaderszLoader } from './LoaderszOrb';
 import { DEFAULT_OPTIONS } from './options';
+import { parsePaletteAttribute } from './palette';
 import type { LoaderszOrbOptions, OrbState, OrbTheme } from './types';
 
 /**
@@ -34,6 +35,7 @@ export class LoaderszLoaderElement extends HTMLElement {
       'particle-radius',
       'hue',
       'color',
+      'palette',
       'aria-label',
     ];
   }
@@ -72,6 +74,36 @@ export class LoaderszLoaderElement extends HTMLElement {
     this.loader?.setOptions(this.readOptions());
   }
 
+  /**
+   * Re-resolves CSS-variable colours after a local theme-token change.
+   *
+   * @returns Nothing. Global `html` and `body` theme changes refresh automatically.
+   */
+  refresh(): void {
+    this.loader?.refresh();
+  }
+
+  /** Gets the semicolon-delimited `palette` attribute as an ordered colour list. */
+  get palette(): readonly string[] {
+    return parsePaletteAttribute(this.getAttribute('palette'));
+  }
+
+  /**
+   * Sets the ordered palette property without requiring callers to manually serialize CSS colours.
+   *
+   * @param palette CSS colours in display order. Empty arrays remove the override.
+   */
+  set palette(palette: readonly string[] | string) {
+    const values = typeof palette === 'string' ? parsePaletteAttribute(palette) : palette;
+    const value = values
+      .map((color) => color.trim())
+      .filter(Boolean)
+      .slice(0, 8)
+      .join('; ');
+    if (value) this.setAttribute('palette', value);
+    else this.removeAttribute('palette');
+  }
+
   /** Returns the accessible label attribute or the component's default label. */
   private get label(): string {
     return this.getAttribute('aria-label') || DEFAULT_OPTIONS.ariaLabel;
@@ -94,6 +126,7 @@ export class LoaderszLoaderElement extends HTMLElement {
       particleRadius: Number(this.getAttribute('particle-radius')) || DEFAULT_OPTIONS.particleRadius,
       hue: this.hasAttribute('hue') ? Number(this.getAttribute('hue')) : DEFAULT_OPTIONS.hue,
       color: this.getAttribute('color') || DEFAULT_OPTIONS.color,
+      palette: parsePaletteAttribute(this.getAttribute('palette')),
       ariaLabel: this.label,
     };
   }

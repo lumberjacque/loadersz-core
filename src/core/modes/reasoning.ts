@@ -490,9 +490,9 @@ export function cognitionFrame(context: FrameContext): OrbFrame {
   for (let index = 0; index < count; index += 1) {
     const [x, y, z] = fibonacciPoint(index, count);
     const point = project(x * 0.96, y * 0.96, z * 0.96);
-    addDot(frame, point, 0.45 + depth(point) * 1.4, 0.15 + depth(point) * 0.58);
+    addDot(frame, point, 0.45 + depth(point) * 1.4, 0.15 + depth(point) * 0.58, undefined, null);
     const signal = Math.max(0, Math.sin(context.time * 1.28 + index * 0.43));
-    if (signal > 0.88) addDot(frame, point, 1.28 + signal, 0.5 + signal * 0.4);
+    if (signal > 0.88) addDot(frame, point, 1.28 + signal, 0.5 + signal * 0.4, undefined, index % 3);
   }
   const routes = 6;
   for (let route = 0; route < routes; route += 1) {
@@ -505,7 +505,7 @@ export function cognitionFrame(context: FrameContext): OrbFrame {
         Math.sin(angle * 2.1 + route) * 0.22,
         Math.sin(angle) * (0.34 + progress * 0.56),
       );
-      if (previous) addLine(frame, previous, point, 0.1, 0.22);
+      if (previous) addLine(frame, previous, point, 0.1, 0.22, undefined, null);
       previous = point;
     }
     const signal = (context.time * 0.48 + route / routes) % 1;
@@ -515,11 +515,11 @@ export function cognitionFrame(context: FrameContext): OrbFrame {
       Math.sin(angle * 2.1 + route) * 0.22,
       Math.sin(angle) * (0.34 + signal * 0.56),
     );
-    addDot(frame, head, 1.55, 0.92);
-    addDot(frame, project(0, 0, 0), 0.7 + signal * 0.42, 0.12 + signal * 0.14);
+    addDot(frame, head, 1.55, 0.92, undefined, route);
+    addDot(frame, project(0, 0, 0), 0.7 + signal * 0.42, 0.12 + signal * 0.14, undefined, null);
   }
   const insight = project(0, 0, 0.88);
-  addDot(frame, insight, 1.72, 0.94);
+  addDot(frame, insight, 1.72, 0.94, undefined, 0);
   return frame;
 }
 
@@ -575,7 +575,14 @@ export function resolveFrame(context: FrameContext): OrbFrame {
     const max = Math.max(Math.abs(x), Math.abs(y), Math.abs(z));
     const faceted: Vector3 = [x / max, y / max, z / max];
     const point = project(lerp(x, faceted[0], settle), lerp(y, faceted[1], settle), lerp(z, faceted[2], settle));
-    addDot(frame, point, 0.34 + depth(point) * 1.08 + settle * 0.32, 0.1 + depth(point) * 0.48 + settle * 0.14);
+    addDot(
+      frame,
+      point,
+      0.34 + depth(point) * 1.08 + settle * 0.32,
+      0.1 + depth(point) * 0.48 + settle * 0.14,
+      undefined,
+      null,
+    );
   }
   const threads = 5;
   const samples = Math.round(48 * context.density);
@@ -590,7 +597,7 @@ export function resolveFrame(context: FrameContext): OrbFrame {
         Math.sin(progress * TAU * 2 + thread * 0.8) * 0.38,
         Math.sin(angle) * radial,
       );
-      if (previous) addLine(frame, previous, point, 0.13 + settle * 0.12, 0.22 + settle * 0.14);
+      if (previous) addLine(frame, previous, point, 0.13 + settle * 0.12, 0.22 + settle * 0.14, undefined, thread);
       previous = point;
     }
     const headProgress = (context.time * 0.21 + thread / threads) % 1;
@@ -600,7 +607,7 @@ export function resolveFrame(context: FrameContext): OrbFrame {
       Math.sin(headProgress * TAU * 2 + thread * 0.8) * 0.38,
       Math.sin(headAngle) * 0.72,
     );
-    addDot(frame, head, 1.48, 0.9);
+    addDot(frame, head, 1.48, 0.9, undefined, thread);
   }
   return frame;
 }

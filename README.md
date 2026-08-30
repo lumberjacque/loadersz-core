@@ -64,23 +64,48 @@ import "loadersz";
 
 ### Attributes
 
-| Attribute         | Type                    | Default   | Description                                                       |
-| ----------------- | ----------------------- | --------- | ----------------------------------------------------------------- |
-| `state`           | state name              | `working` | Selects the visual geometry.                                      |
-| `size`            | number                  | `96`      | Square side in CSS pixels; values below `16` are clamped.         |
-| `speed`           | number                  | `1`       | Timeline multiplier.                                              |
-| `density`         | number                  | `1`       | Geometry detail; clamped to `0.35`–`2`.                           |
-| `particle-radius` | number                  | `1`       | Multiplies visible particle thickness; clamped to `0.5`–`2.5`.    |
-| `theme`           | `auto`, `dark`, `light` | `auto`    | Canvas colour scheme.                                             |
-| `hue`             | `0`–`360`               | unset     | Overrides a mode's native colour palette.                         |
-| `color`           | CSS colour string       | unset     | Overrides `hue`; accepts hex, CSS colours, and `var(--token)`.    |
-| `paused`          | boolean attribute       | unset     | Stops frame scheduling and keeps the current frame visible.       |
-| `force-motion`    | boolean attribute       | unset     | Overrides a reduced-motion preference; use only when appropriate. |
-| `aria-label`      | string                  | `Loading` | Accessible label applied to the internal canvas.                  |
+| Attribute         | Type                            | Default   | Description                                                        |
+| ----------------- | ------------------------------- | --------- | ------------------------------------------------------------------ |
+| `state`           | state name                      | `working` | Selects the visual geometry.                                       |
+| `size`            | number                          | `96`      | Square side in CSS pixels; values below `16` are clamped.          |
+| `speed`           | number                          | `1`       | Timeline multiplier.                                               |
+| `density`         | number                          | `1`       | Geometry detail; clamped to `0.35`–`2`.                            |
+| `particle-radius` | number                          | `1`       | Multiplies visible particle thickness; clamped to `0.5`–`2.5`.     |
+| `theme`           | `auto`, `dark`, `light`         | `auto`    | Canvas colour scheme.                                              |
+| `hue`             | `0`–`360`                       | unset     | Overrides a mode's native colour palette.                          |
+| `color`           | CSS colour string               | unset     | Overrides `hue`; accepts hex, CSS colours, and `var(--token)`.     |
+| `palette`         | semicolon-delimited CSS colours | unset     | Overrides `color` and `hue`; accepts one to eight ordered colours. |
+| `paused`          | boolean attribute               | unset     | Stops frame scheduling and keeps the current frame visible.        |
+| `force-motion`    | boolean attribute               | unset     | Overrides a reduced-motion preference; use only when appropriate.  |
+| `aria-label`      | string                          | `Loading` | Accessible label applied to the internal canvas.                   |
 
 ### Colour modes
 
-Omit both `hue` and `color` to preserve the loader's native treatment. That can be a multi-colour palette or deliberately monochrome grey, depending on the movement. Set `hue` to recolour every visible particle with one hue, or set `color` for one exact CSS colour. `color` takes precedence over `hue`.
+Omit `palette`, `color`, and `hue` to preserve the loader's native treatment. That can be a multi-colour palette or deliberately monochrome grey, depending on the movement. Set `hue` to recolour every visible particle with one hue, or set `color` for one exact CSS colour.
+
+Use `palette` when a product needs more than one brand colour. Its semicolon separator safely supports functional CSS colours with commas:
+
+```html
+<loadersz-loader
+  state="solving"
+  palette="#ff5a36; oklch(70% 0.2 285); var(--brand)"
+></loadersz-loader>
+```
+
+In TypeScript, provide the same colours as an array:
+
+```ts
+const loader = new LoaderszLoader(canvas, {
+  state: "solving",
+  palette: ["#ff5a36", "oklch(70% 0.2 285)", "var(--brand)"],
+});
+
+loader.palette = ["var(--brand)", "var(--accent)"];
+```
+
+Palettes accept one to eight entries. Short palettes cycle through visual roles, while a state's native opacity and depth treatment remain intact. Invalid entries are ignored; when none resolve, loaders safely fall back to `color`, then `hue`, then their native treatment. Palette has the highest precedence: `palette` → `color` → `hue` → native.
+
+CSS custom properties are resolved once when options or global theme tokens change, never per animation frame. Changes to `html` or `body` theme classes/styles refresh automatically. For a local theme scope, call `loader.refresh()` after changing its token.
 
 ### States
 
@@ -180,7 +205,7 @@ For Solid, Qwik, Lit, and plain HTML, import `loadersz` and use `<loadersz-loade
 | Angular                | `import 'loadersz'` + `LoaderszLoader`            | `import 'loadersz/racing'` + `LoaderszLoader`                           |
 | Lit, Solid, Qwik, HTML | `import 'loadersz'`                               | `import 'loadersz/racing'`                                              |
 
-The controls are always the same. The native element spells its multi-word attributes as `aria-label`, `force-motion`, and `particle-radius`; React and Vue wrappers spell them as `ariaLabel`, `forceMotion`, and `particleRadius`. `state`, `size`, `speed`, `density`, `hue`, `color`, `theme`, and `paused` keep the same name.
+The controls are always the same. The native element spells its multi-word attributes as `aria-label`, `force-motion`, and `particle-radius`; React and Vue wrappers spell them as `ariaLabel`, `forceMotion`, and `particleRadius`. `state`, `size`, `speed`, `density`, `hue`, `color`, `palette`, `theme`, and `paused` keep the same name. Pass `palette` as an array in framework bindings; the adapters serialize it safely for the native element.
 
 ## Single-mode imports
 
@@ -214,7 +239,7 @@ export function Loading() {
 }
 ```
 
-The direct import itself is framework-agnostic: it always registers the same native element and supports the same `state`, `size`, `speed`, `density`, `hue`, `color`, `theme`, `paused`, and `force-motion` attributes. Framework wrapper types are intentionally specific to their framework: use `LoaderszReactProps` for React, `loadersz/vue` for the typed Vue component, and `import type {} from 'loadersz/svelte'` alongside a direct entry for Svelte template typing. The Vue wrapper imports the complete switchable component, so use the native element when the smallest single-state bundle matters.
+The direct import itself is framework-agnostic: it always registers the same native element and supports the same `state`, `size`, `speed`, `density`, `hue`, `color`, `palette`, `theme`, `paused`, and `force-motion` attributes. Framework wrapper types are intentionally specific to their framework: use `LoaderszReactProps` for React, `loadersz/vue` for the typed Vue component, and `import type {} from 'loadersz/svelte'` alongside a direct entry for Svelte template typing. The Vue wrapper imports the complete switchable component, so use the native element when the smallest single-state bundle matters.
 
 For a fixed canvas you own yourself, the same entry point exposes a fixed imperative controller:
 

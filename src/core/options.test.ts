@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mergeOptions, resolveMode } from './options';
+import { mergeOptions, normalizePalette, resolveMode } from './options';
 
 describe('orb options', () => {
   it('maps semantic states to visual modes', () => {
@@ -58,5 +58,12 @@ describe('orb options', () => {
 
   it('fills omitted options with safe defaults', () => {
     expect(mergeOptions({ speed: 1.5 })).toMatchObject({ state: 'working', speed: 1.5, theme: 'auto' });
+  });
+
+  it('normalizes palette entries without mutating the caller array', () => {
+    const input = [' #ff5a36 ', '', 42 as unknown as string, '#635bff', '#2ea44f', '#f0c000', '#111', '#222', '#333'];
+
+    expect(normalizePalette(input)).toEqual(['#ff5a36', '#635bff', '#2ea44f', '#f0c000', '#111', '#222', '#333']);
+    expect(mergeOptions({ palette: input }).palette).not.toBe(input);
   });
 });

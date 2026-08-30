@@ -16,7 +16,29 @@ export const DEFAULT_OPTIONS: Required<LoaderszOrbOptions> = {
   particleRadius: 1,
   hue: -1,
   color: '',
+  palette: [],
 };
+
+/** Maximum number of caller-provided colours retained by the palette interface. */
+export const MAX_PALETTE_COLORS = 8;
+
+/**
+ * Creates a safe, compact palette value without validating browser-specific CSS syntax.
+ *
+ * CSS validation happens against the owning canvas because custom properties must resolve in
+ * that element's cascade.
+ *
+ * @param palette Caller-provided ordered CSS colours.
+ * @returns Trimmed non-empty colours, limited to {@link MAX_PALETTE_COLORS} entries.
+ */
+export function normalizePalette(palette: readonly string[] | undefined): string[] {
+  if (!palette) return [];
+  return palette
+    .filter((color): color is string => typeof color === 'string')
+    .map((color) => color.trim())
+    .filter(Boolean)
+    .slice(0, MAX_PALETTE_COLORS);
+}
 
 /**
  * Resolves a state name to a geometry builder name.
@@ -35,5 +57,5 @@ export function resolveMode(state: OrbState): OrbMode {
  * @returns A complete option object with every field present.
  */
 export function mergeOptions(options: LoaderszOrbOptions): Required<LoaderszOrbOptions> {
-  return { ...DEFAULT_OPTIONS, ...options };
+  return { ...DEFAULT_OPTIONS, ...options, palette: normalizePalette(options.palette) };
 }

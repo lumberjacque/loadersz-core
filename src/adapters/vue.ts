@@ -2,7 +2,7 @@ import { defineComponent, h } from 'vue';
 import type { PropType } from 'vue';
 
 import { registerLoadersz } from '../loadersz';
-import type { OrbState, OrbTheme } from '../core/types';
+import type { LoaderszOrbOptions, OrbState, OrbTheme } from '../core/types';
 
 registerLoadersz();
 
@@ -29,6 +29,7 @@ export const LoaderszLoader = defineComponent({
     particleRadius: Number,
     hue: Number,
     color: String,
+    palette: Array as PropType<LoaderszOrbOptions['palette']>,
     theme: String as PropType<OrbTheme>,
     paused: Boolean,
     forceMotion: Boolean,
@@ -45,6 +46,7 @@ export const LoaderszLoader = defineComponent({
         'particle-radius': props.particleRadius,
         hue: props.hue,
         color: props.color,
+        palette: props.palette?.join('; '),
         theme: props.theme,
         paused: props.paused ? '' : undefined,
         'force-motion': props.forceMotion ? '' : undefined,

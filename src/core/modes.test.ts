@@ -28,5 +28,15 @@ describe('orb modes', () => {
 
     expect(sparse.rects).toHaveLength(4);
     expect(detailed.rects).toHaveLength(12);
+    expect(new Set(detailed.rects.map((rect) => rect.paletteRole))).toEqual(
+      new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
+    );
+  });
+
+  it('marks only the active cube turn as palette-addressable', () => {
+    const cube = buildFrame('cube', { ...frameContext, time: 1.25 });
+
+    expect(cube.dots.some((dot) => dot.paletteRole === 1)).toBe(true);
+    expect(cube.dots.some((dot) => dot.paletteRole === null)).toBe(true);
   });
 });

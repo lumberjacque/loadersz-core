@@ -194,6 +194,7 @@ export function treemapFrame(context: FrameContext): OrbFrame {
         },
         0.56 + oscillate(time, index * 1.43, 0.72) * 0.28,
         tones[index % tones.length],
+        index,
       );
       return;
     }

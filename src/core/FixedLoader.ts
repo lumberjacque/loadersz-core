@@ -12,6 +12,8 @@ export interface LoaderszSingleModeLoader {
   readonly canvas: HTMLCanvasElement;
   /** Applies an update while keeping the imported visual state fixed. */
   setOptions(options: LoaderszSingleModeOptions): void;
+  /** Re-resolves local CSS-variable colours and redraws without resetting the timeline phase. */
+  refresh(): void;
   /** Stops animation and releases browser listeners. */
   destroy(): void;
 }
@@ -71,6 +73,7 @@ export function createFixedModeElement(createLoader: LoaderszSingleModeConstruct
         'particle-radius',
         'hue',
         'color',
+        'palette',
         'aria-label',
       ];
     }
@@ -93,6 +96,35 @@ export function createFixedModeElement(createLoader: LoaderszSingleModeConstruct
       this.loader?.setOptions(this.readOptions());
     }
 
+    /** Re-resolves CSS-variable colours after a local theme-token change. */
+    refresh(): void {
+      this.loader?.refresh();
+    }
+
+    /** Gets the semicolon-delimited `palette` attribute as an ordered colour list. */
+    get palette(): readonly string[] {
+      const value = this.getAttribute('palette');
+      return value
+        ? value
+            .split(';')
+            .map((color) => color.trim())
+            .filter(Boolean)
+            .slice(0, 8)
+        : [];
+    }
+
+    /** Sets the ordered palette property without requiring attribute serialization by the caller. */
+    set palette(palette: readonly string[] | string) {
+      const values = typeof palette === 'string' ? palette.split(';') : palette;
+      const value = values
+        .map((color) => color.trim())
+        .filter(Boolean)
+        .slice(0, 8)
+        .join('; ');
+      if (value) this.setAttribute('palette', value);
+      else this.removeAttribute('palette');
+    }
+
     private get label(): string {
       return this.getAttribute('aria-label') || DEFAULT_OPTIONS.ariaLabel;
     }
@@ -108,6 +140,7 @@ export function createFixedModeElement(createLoader: LoaderszSingleModeConstruct
         particleRadius: Number(this.getAttribute('particle-radius')) || DEFAULT_OPTIONS.particleRadius,
         hue: this.hasAttribute('hue') ? Number(this.getAttribute('hue')) : DEFAULT_OPTIONS.hue,
         color: this.getAttribute('color') || DEFAULT_OPTIONS.color,
+        palette: this.palette,
         ariaLabel: this.label,
       };
     }
