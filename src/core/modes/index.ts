@@ -1,6 +1,7 @@
 export * from './foundational';
 export * from './kinetic';
 export * from './reasoning';
+export * from './agent-orbs';
 export * from './atmospheric';
 export * from './classic-loaders';
 export * from './utility-loaders';
@@ -8,5 +9,6 @@ export * from './data-loaders';
 export * from './data-studies';
 export * from './data-bars';
 export * from './data-charts';
+export * from './image-processing';
 export * from './expansion';
 export { FRAME_BUILDERS, buildFrame } from './registry';

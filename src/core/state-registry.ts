@@ -95,6 +95,7 @@ export const STATE_TO_MODE: Record<LoaderStateName, OrbMode> = {
   linking: 'link',
   resolving: 'resolve',
   imagining: 'imagine',
+  settling: 'settle',
   'loading-bars': 'bars',
   progressing: 'progress',
   placeholder: 'skeleton',
@@ -115,6 +116,15 @@ export const STATE_TO_MODE: Record<LoaderStateName, OrbMode> = {
   sampling: 'scatter',
   forecasting: 'forecast',
   metering: 'meter',
+  'image-decoding': 'imageDecode',
+  unblurring: 'unblur',
+  rendering: 'render',
+  denoising: 'denoise',
+  upscaling: 'upscale',
+  segmenting: 'segment',
+  masking: 'mask',
+  inpainting: 'inpaint',
+  interpolating: 'interpolate',
   heatmapping: 'heatmap',
   candlesticking: 'candles',
   graphing: 'graph',
@@ -193,6 +203,13 @@ const loaderStates = [
 ] as const satisfies readonly LoaderStateName[];
 
 const reasoningStates = [
+  'breathing',
+  'listening',
+  'connecting',
+  'searching',
+  'observing',
+  'shaping',
+  'weaving',
   'pondering',
   'deducing',
   'branching',
@@ -211,8 +228,7 @@ const reasoningStates = [
   'linking',
   'resolving',
   'imagining',
-  'prioritizing',
-  'verifying',
+  'settling',
 ] as const satisfies readonly LoaderStateName[];
 
 const systemStates = [
@@ -226,6 +242,8 @@ const systemStates = [
   'dispatching',
   'batching',
   'checkpointing',
+  'prioritizing',
+  'verifying',
 ] as const satisfies readonly LoaderStateName[];
 
 const dataStates = [
@@ -239,6 +257,15 @@ const dataStates = [
   'sampling',
   'forecasting',
   'metering',
+  'image-decoding',
+  'unblurring',
+  'rendering',
+  'denoising',
+  'upscaling',
+  'segmenting',
+  'masking',
+  'inpainting',
+  'interpolating',
   'heatmapping',
   'candlesticking',
   'graphing',

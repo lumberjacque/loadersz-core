@@ -2,6 +2,7 @@ import type { FrameContext, OrbFrame, OrbMode } from './shared';
 import * as foundational from './foundational';
 import * as kinetic from './kinetic';
 import * as reasoning from './reasoning';
+import * as agentOrbs from './agent-orbs';
 import * as atmospheric from './atmospheric';
 import * as classicLoaders from './classic-loaders';
 import * as utilityLoaders from './utility-loaders';
@@ -9,12 +10,14 @@ import * as dataLoaders from './data-loaders';
 import * as dataStudies from './data-studies';
 import * as dataBars from './data-bars';
 import * as dataCharts from './data-charts';
+import * as imageProcessing from './image-processing';
 import * as expansion from './expansion';
 
 const BUILDERS = {
   ...foundational,
   ...kinetic,
   ...reasoning,
+  ...agentOrbs,
   ...atmospheric,
   ...classicLoaders,
   ...utilityLoaders,
@@ -22,6 +25,7 @@ const BUILDERS = {
   ...dataStudies,
   ...dataBars,
   ...dataCharts,
+  ...imageProcessing,
   ...expansion,
 };
 type FrameBuilder = (context: FrameContext) => OrbFrame;
@@ -113,6 +117,7 @@ export const FRAME_BUILDERS: Record<OrbMode, FrameBuilder> = {
   link: BUILDERS.linkFrame,
   resolve: BUILDERS.resolveFrame,
   imagine: BUILDERS.imagineFrame,
+  settle: BUILDERS.settleFrame,
   bars: BUILDERS.barsFrame,
   progress: BUILDERS.progressFrame,
   skeleton: BUILDERS.skeletonFrame,
@@ -133,6 +138,15 @@ export const FRAME_BUILDERS: Record<OrbMode, FrameBuilder> = {
   scatter: BUILDERS.scatterFrame,
   forecast: BUILDERS.forecastFrame,
   meter: BUILDERS.meterFrame,
+  imageDecode: BUILDERS.imageDecodeFrame,
+  unblur: BUILDERS.unblurFrame,
+  render: BUILDERS.renderFrame,
+  denoise: BUILDERS.denoiseFrame,
+  upscale: BUILDERS.upscaleFrame,
+  segment: BUILDERS.segmentFrame,
+  mask: BUILDERS.maskFrame,
+  inpaint: BUILDERS.inpaintFrame,
+  interpolate: BUILDERS.interpolateFrame,
   heatmap: BUILDERS.heatmapFrame,
   candles: BUILDERS.candlesFrame,
   graph: BUILDERS.nodegraphFrame,
