@@ -29,4 +29,16 @@ describe('orb modes', () => {
     expect(sparse.rects).toHaveLength(4);
     expect(detailed.rects).toHaveLength(12);
   });
+
+  it('keeps retrying and scanning continuous across their cycle boundaries', () => {
+    const retryPeriod = 1 / 0.46;
+    const scannerPeriod = 1 / 0.4;
+    const beforeRetry = buildFrame('retry', { ...frameContext, time: retryPeriod - 0.001 });
+    const afterRetry = buildFrame('retry', { ...frameContext, time: retryPeriod + 0.001 });
+    const beforeScanner = buildFrame('scanner', { ...frameContext, time: scannerPeriod - 0.001 });
+    const afterScanner = buildFrame('scanner', { ...frameContext, time: scannerPeriod + 0.001 });
+
+    expect(Math.abs(beforeRetry.arcs[1].endAngle - afterRetry.arcs[1].endAngle)).toBeLessThan(0.05);
+    expect(Math.abs(beforeScanner.rects.at(-1)!.y - afterScanner.rects.at(-1)!.y)).toBeLessThan(0.2);
+  });
 });

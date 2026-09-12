@@ -168,7 +168,8 @@ export function downloadFrame({ time, radius, density, particleRadius }: FrameCo
 export function retryFrame({ time, radius, particleRadius }: FrameContext): OrbFrame {
   const frame = createFrame();
   const c = center(radius);
-  const progress = (time * 0.46) % 1;
+  // Retries gather confidence, then release it. A cosine cycle avoids a hard reset at 100%.
+  const progress = (1 - Math.cos(time * 0.46 * TAU)) / 2;
   const width = safeThickness({ time, radius, density: 1, particleRadius }, radius * 0.12, radius * 0.3, radius * 0.05);
   addArc(frame, { x: c, y: c, radius: radius * 0.54, startAngle: 0, endAngle: TAU, width, z: -0.5 }, 0.1, 210);
   addArc(
@@ -193,7 +194,9 @@ export function scannerFrame({ time, radius, density, particleRadius }: FrameCon
   const frame = createFrame();
   const c = center(radius);
   const lines = densityCount({ time, radius, density }, { base: 7, minimum: 5, maximum: 13 });
-  const y = c - radius * 0.55 + ((time * 0.4) % 1) * radius * 1.1;
+  // Sweep back through the field instead of teleporting from its lower edge to the top.
+  const sweep = (1 - Math.cos(time * 0.4 * TAU)) / 2;
+  const y = c - radius * 0.55 + sweep * radius * 1.1;
   for (let i = 0; i < lines; i += 1)
     addRect(
       frame,

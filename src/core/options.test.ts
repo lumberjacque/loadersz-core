@@ -52,6 +52,16 @@ describe('orb options', () => {
     ['linking', 'link'],
     ['resolving', 'resolve'],
     ['imagining', 'imagine'],
+    ['settling', 'settle'],
+    ['image-decoding', 'imageDecode'],
+    ['unblurring', 'unblur'],
+    ['rendering', 'render'],
+    ['denoising', 'denoise'],
+    ['upscaling', 'upscale'],
+    ['segmenting', 'segment'],
+    ['masking', 'mask'],
+    ['inpainting', 'inpaint'],
+    ['interpolating', 'interpolate'],
   ] as const)('maps %s to %s', (state, mode) => {
     expect(resolveMode(state)).toBe(mode);
   });

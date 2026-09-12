@@ -1,6 +1,6 @@
 {
   "name": "loadersz",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": false,
   "description": "Framework-agnostic animated Canvas loaders as a native web component.",
   "keywords": [
@@ -116,6 +116,7 @@
     "./dist/linking.js",
     "./dist/resolving.js",
     "./dist/imagining.js",
+    "./dist/settling.js",
     "./dist/loading-bars.js",
     "./dist/progressing.js",
     "./dist/placeholder.js",
@@ -180,7 +181,16 @@
     "./dist/plotting.js",
     "./dist/sampling.js",
     "./dist/forecasting.js",
-    "./dist/metering.js"
+    "./dist/metering.js",
+    "./dist/denoising.js",
+    "./dist/upscaling.js",
+    "./dist/segmenting.js",
+    "./dist/masking.js",
+    "./dist/inpainting.js",
+    "./dist/interpolating.js",
+    "./dist/image-decoding.js",
+    "./dist/unblurring.js",
+    "./dist/rendering.js"
   ],
   "types": "./dist/loadersz.d.ts",
   "exports": {
