@@ -5,14 +5,14 @@
 [![CI](https://github.com/lumberjacque/loadersz-core/actions/workflows/ci.yml/badge.svg)](https://github.com/lumberjacque/loadersz-core/actions/workflows/ci.yml)
 [![bundle size](https://deno.bundlejs.com/?q=loadersz&badge=detailed&badge-style=flat)](https://bundlejs.com/?q=loadersz)
 [![single loader size](https://deno.bundlejs.com/badge?q=loadersz/typing&treeshake=[*])](#single-mode-imports)
-[![motion states](https://img.shields.io/badge/motion%20states-150-6f8cff?style=flat-square)](#states)
+[![motion states](https://img.shields.io/badge/motion%20states-160-6f8cff?style=flat-square)](#states)
 [![license](https://img.shields.io/npm/l/loadersz?style=flat-square&label=license)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![core dependencies](https://img.shields.io/badge/core%20dependencies-0-2ea44f?style=flat-square)](#accessibility-and-performance)
 
 Framework-agnostic, dependency-free Canvas loaders for the browser. `loadersz` ships as a native Web Component and a small imperative TypeScript API-no React, SVG filters, or runtime dependencies.
 
-**150 motion states. One fixed state is 2.5–3.1 kB gzipped; the complete switchable library is available from one import.**
+**160 motion states. One fixed state is 2.5–3.1 kB gzipped; the complete switchable library is available from one import.**
 
 ## Install
 
@@ -84,7 +84,9 @@ Omit both `hue` and `color` to preserve the loader's native treatment. That can 
 
 ### States
 
-`working`, `searching`, `connecting`, `weaving`, `shaping`, `listening`, `breathing`, `composing`, `solving`, `observing`, `dreaming`, `charging`, `flowing`, `awakening`, `coding`, `transcending`, `singing`, `growing`, `blooming`, `wandering`, `decoding`, `calibrating`, `attracting`, `shattering`, `crystallizing`, `constellating`, `folding`, `echoing`, `balancing`, `weathering`, `mapping`, `forging`, `orbiting`, `racing`, `bubbling`, `spinning`, `electrifying`, `flocking`, `throbbing`, `cascading`, `spiraling`, `juggling`, `eclipsing`, `resonating`, `condensing`, `dispersing`, `prisming`, `levitating`, `synchronizing`, `unraveling`, `pondering`, `deducing`, `branching`, `focusing`, `reflecting`, `weighing`, `recalling`, `tracing`, `converging`, `questioning`, `glimmering`, `radiating`, `harmonizing`, `twinkling`, `flickering`, `shimmering`, `surfacing`, `vibrating`, `illuminating`, `sparkling`, `loading`, `buffering`, `typing`, `processing`, `synthesizing`, `considering`, `uploading`, `queuing`, `associating`, `evaluating`, `reasoning`, `exploring`, `linking`, `resolving`, and `imagining`.
+`loadersz` currently exposes 160 state names. `LOADER_STATES` is the source of truth for the complete, ordered list, so use the enumeration snippet above when building a selector, docs page, or generated integration.
+
+Recent additions include the calm reasoning state `settling`, plus `image-decoding`, `unblurring`, `rendering`, `denoising`, `upscaling`, `segmenting`, `masking`, `inpainting`, and chart-focused `interpolating`.
 
 ## Framework adapters
 
@@ -199,7 +201,7 @@ import "loadersz/racing";
 ></loadersz-loader>
 ```
 
-The direct entry's visual state is fixed by its import. The `state` attribute is accepted so markup stays familiar, but cannot load the other 84 animations. Every state name has a matching entry point: `loadersz/working`, `loadersz/solving`, `loadersz/racing`, and so on.
+The direct entry's visual state is fixed by its import. The `state` attribute is accepted so markup stays familiar, but cannot load the other 159 animations. Every state name has a matching entry point: `loadersz/working`, `loadersz/solving`, `loadersz/racing`, and so on.
 
 In React, a direct entry can stay small too. Import the fixed runtime entry and the adapter types only; TypeScript removes the type-only import from the browser bundle.
 
