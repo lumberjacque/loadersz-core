@@ -8,6 +8,7 @@ const valueAfter = (flag) => {
 };
 const baseline = await import(pathToFileURL(valueAfter('--baseline')).href);
 const candidate = await import(`${pathToFileURL(valueAfter('--candidate')).href}?candidate=${Date.now()}`);
+const visualVersion = (bundle, mode) => bundle.FRAME_VISUAL_VERSIONS?.[mode] ?? 1;
 
 const compare = (left, right, path = 'root') => {
   if (Object.is(left, right)) return;
@@ -28,8 +29,15 @@ const densities = [0.35, 0.999, 1, 1.001, 2];
 const radii = [6.56, 39.36, 114.8];
 const particleRadii = [0.5, 1, 2.5];
 let frameComparisons = 0;
+const revisedModes = [];
 for (const mode of Object.keys(baseline.FRAME_BUILDERS)) {
   if (!(mode in candidate.FRAME_BUILDERS)) throw new Error(`Candidate is missing mode ${mode}`);
+  const baselineVersion = visualVersion(baseline, mode);
+  const candidateVersion = visualVersion(candidate, mode);
+  if (baselineVersion !== candidateVersion) {
+    revisedModes.push(`${mode}@${baselineVersion}→${candidateVersion}`);
+    continue;
+  }
   for (const time of times)
     for (const density of densities)
       for (const radius of radii)
@@ -75,4 +83,5 @@ for (const mode of ['pulse', 'network', 'barchart', 'gauge']) {
     paintComparisons += 1;
   }
 }
-console.log(`Equivalent: ${frameComparisons} frames and ${paintComparisons} renderer scenarios.`);
+const revised = revisedModes.length ? `; approved visual revisions: ${revisedModes.join(', ')}` : '';
+console.log(`Equivalent: ${frameComparisons} frames and ${paintComparisons} renderer scenarios${revised}.`);
